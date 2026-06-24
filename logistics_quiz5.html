@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Логистика и УЦП — Квиз</title>
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --surface2: #e8f0fe;
+    --surface3: #f8faff;
+    --accent: #2563eb;
+    --accent2: #1d4ed8;
+    --accent-light: #dbeafe;
+    --gold: #d97706;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --text: #1e293b;
+    --text2: #475569;
+    --muted: #94a3b8;
+    --border: #e2e8f0;
+    --border2: #cbd5e1;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+    --radius: 14px;
+    --font: 'Segoe UI', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); }
+
+  /* ========= SCREENS ========= */
+  .screen { display: none; min-height: 100vh; flex-direction: column; }
+  .screen.active { display: flex; }
+
+  /* ========= HOME ========= */
+  #home { align-items: center; justify-content: flex-start; padding: 0 0 40px; }
+  .home-hero {
+    width: 100%;
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 60%, #3b82f6 100%);
+    padding: 40px 24px 36px; text-align: center; position: relative; overflow: hidden;
+  }
+  .home-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .home-logo { font-size: 36px; margin-bottom: 12px; position: relative; }
+  .home-title { font-size: 22px; font-weight: 800; line-height: 1.3; margin-bottom: 6px; color: #fff; position: relative; }
+  .home-sub { font-size: 13px; color: #bfdbfe; position: relative; }
+  .home-badges { display: flex; gap: 8px; justify-content: center; margin-top: 16px; flex-wrap: wrap; position: relative; }
+  .badge { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: #fff; font-weight: 600; }
+
+  .home-body { width: 100%; max-width: 480px; padding: 24px 16px 0; }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+
+  .topic-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 0; }
+  .topic-card {
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 14px 16px; cursor: pointer; transition: all .15s;
+    display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow);
+  }
+  .topic-card:hover { border-color: var(--accent); background: var(--surface2); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .topic-card:active { transform: translateY(0); }
+  .topic-icon { font-size: 22px; flex-shrink: 0; }
+  .topic-info { flex: 1; }
+  .topic-name { font-size: 14px; font-weight: 600; line-height: 1.3; color: var(--text); }
+  .topic-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .topic-progress { width: 36px; text-align: right; flex-shrink: 0; }
+  .prog-ring { position: relative; width: 36px; height: 36px; }
+  .prog-ring svg { transform: rotate(-90deg); }
+  .prog-ring .bg { fill: none; stroke: var(--border2); stroke-width: 3; }
+  .prog-ring .fill { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset .4s; }
+  .prog-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--accent); }
+
+  /* Mode tabs */
+  .mode-row { display: flex; gap: 8px; margin-bottom: 20px; background: var(--border); border-radius: 12px; padding: 4px; }
+  .mode-btn {
+    flex: 1; background: transparent; border: none; border-radius: 10px;
+    padding: 10px 8px; cursor: pointer; text-align: center; transition: all .15s; color: var(--text2);
+  }
+  .mode-btn.active { background: var(--surface); color: var(--accent); box-shadow: var(--shadow); }
+  .mode-btn .mode-icon { font-size: 20px; margin-bottom: 4px; }
+  .mode-btn .mode-name { font-size: 13px; font-weight: 600; }
+  .mode-btn .mode-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .mode-btn.active .mode-desc { color: var(--accent); opacity: .7; }
+
+  /* ========= QUIZ ========= */
+  #quiz { padding: 0; background: var(--bg); }
+  .quiz-header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 10; box-shadow: var(--shadow);
+  }
+  .back-btn { background: var(--surface2); border: none; color: var(--accent); font-size: 18px; cursor: pointer; padding: 6px 10px; border-radius: 8px; }
+  .quiz-topic { font-size: 13px; color: var(--text2); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+  .quiz-counter { font-size: 13px; font-weight: 700; color: var(--accent); white-space: nowrap; background: var(--accent-light); padding: 4px 10px; border-radius: 20px; }
+
+  .progress-bar-wrap { height: 5px; background: var(--border); }
+  .progress-bar { height: 5px; background: var(--accent); transition: width .35s cubic-bezier(.4,0,.2,1); }
+
+  .quiz-body { flex: 1; padding: 20px 16px 16px; max-width: 560px; margin: 0 auto; width: 100%; }
+
+  /* Question type banner — big and visible */
+  .q-type-banner {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--accent-light); border: 1.5px solid var(--accent);
+    border-radius: 10px; padding: 8px 14px; margin-bottom: 16px;
+  }
+  .q-type-icon { font-size: 18px; }
+  .q-type-text { font-size: 13px; font-weight: 700; color: var(--accent); }
+  .q-type-hint { font-size: 11px; color: var(--accent); opacity: .7; margin-left: auto; }
+
+  /* Special banner colors per type */
+  .q-type-banner.multi { background: #fef3c7; border-color: #d97706; }
+  .q-type-banner.multi .q-type-text, .q-type-banner.multi .q-type-hint { color: #92400e; }
+  .q-type-banner.input-type { background: #f0fdf4; border-color: #16a34a; }
+  .q-type-banner.input-type .q-type-text, .q-type-banner.input-type .q-type-hint { color: #166534; }
+  .q-type-banner.match { background: #fdf4ff; border-color: #9333ea; }
+  .q-type-banner.match .q-type-text, .q-type-banner.match .q-type-hint { color: #6b21a8; }
+
+  .q-text { font-size: 16px; font-weight: 600; line-height: 1.55; margin-bottom: 20px; color: var(--text); }
+
+  /* MCQ options */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius);
+    padding: 14px 16px; cursor: pointer; font-size: 14px; line-height: 1.45; transition: all .15s;
+    display: flex; align-items: flex-start; gap: 12px; text-align: left; box-shadow: var(--shadow);
+    color: var(--text);
+  }
+  .option:hover:not(.locked) { border-color: var(--accent); background: var(--surface2); transform: translateX(2px); }
+  .option.multi-sel {
+    border-color: var(--accent); background: var(--surface2);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  .option.multi-sel .opt-letter { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .option.correct { border-color: var(--green); background: var(--green-bg); }
+  .option.wrong { border-color: var(--red); background: var(--red-bg); }
+  .option.correct .opt-letter { background: var(--green); border-color: var(--green); color: #fff; }
+  .option.wrong .opt-letter { background: var(--red); border-color: var(--red); color: #fff; }
+  /* Correct answer that user did NOT select — outlined green */
+  .option.correct-missed {
+    border-color: var(--green); border-style: dashed; background: #f0fdf4;
+  }
+  .option.correct-missed .opt-letter {
+    background: transparent; border-color: var(--green); color: var(--green);
+  }
+  .multi-submit {
+    margin-top: 16px; background: var(--accent); color: #fff; border: none;
+    border-radius: var(--radius); padding: 14px 24px; font-size: 15px; font-weight: 700;
+    cursor: pointer; width: 100%; transition: background .15s; letter-spacing: .2px;
+  }
+  .multi-submit:hover { background: var(--accent2); }
+  .multi-submit:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
+
+  /* Text input */
+  .text-input-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .input-hint-box {
+    background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;
+    padding: 10px 14px; font-size: 13px; color: #166534; display: flex; gap: 8px; align-items: flex-start;
+  }
+  .text-input {
+    background: var(--surface); border: 2px solid var(--border2); border-radius: var(--radius);
+    padding: 14px 16px; font-size: 15px; color: var(--text); outline: none; width: 100%;
+    transition: border-color .15s; box-shadow: var(--shadow);
+  }
+  .text-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .text-input.correct { border-color: var(--green); background: var(--green-bg); }
+  .text-input.wrong { border-color: var(--red); background: var(--red-bg); }
+  .text-submit {
+    background: var(--green); color: #fff; border: none; border-radius: var(--radius);
+    padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; transition: .15s;
+  }
+  .text-submit:hover { background: #15803d; }
+  .text-submit:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
+
+  /* Match */
+  .match-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .match-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+  .match-term {
+    background: var(--surface); border: 1.5px solid var(--border2); border-radius: 10px;
+    padding: 10px 12px; font-size: 13px; font-weight: 600; color: var(--text); box-shadow: var(--shadow);
+  }
+  .match-select {
+    background: var(--surface); border: 2px solid var(--border2); border-radius: 10px;
+    padding: 10px 12px; font-size: 12px; color: var(--text); outline: none; cursor: pointer;
+    -webkit-appearance: none; appearance: none; transition: .15s; box-shadow: var(--shadow);
+  }
+  .match-select:focus { border-color: #9333ea; box-shadow: 0 0 0 3px #fdf4ff; }
+  .match-select.correct { border-color: var(--green); background: var(--green-bg); }
+  .match-select.wrong { border-color: var(--red); background: var(--red-bg); }
+  .match-submit {
+    margin-top: 14px; background: #9333ea; color: #fff; border: none; border-radius: var(--radius);
+    padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; transition: .15s;
+  }
+  .match-submit:hover { background: #7e22ce; }
+
+  /* Feedback */
+  .feedback {
+    margin-top: 16px; border-radius: var(--radius); padding: 14px 16px;
+    font-size: 13px; line-height: 1.6; border: 1.5px solid var(--border);
+    background: var(--surface); box-shadow: var(--shadow);
+  }
+  .feedback.correct-fb { border-color: var(--green); background: var(--green-bg); }
+  .feedback.wrong-fb { border-color: var(--red); background: var(--red-bg); }
+  .feedback-icon { font-size: 20px; margin-bottom: 6px; display: block; }
+  .feedback-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .feedback.correct-fb .feedback-title { color: var(--green); }
+  .feedback.wrong-fb .feedback-title { color: var(--red); }
+  .feedback-text { color: var(--text2); }
+
+  .next-btn {
+    position: sticky; bottom: 0; width: 100%; background: var(--surface);
+    border-top: 1px solid var(--border); padding: 12px 16px; display: none;
+    box-shadow: 0 -4px 12px rgba(0,0,0,.06);
+  }
+  .next-btn.show { display: block; }
+  .next-btn button {
+    width: 100%; background: var(--accent); color: #fff; border: none;
+    border-radius: var(--radius); padding: 15px; font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: background .15s;
+  }
+  .next-btn button:hover { background: var(--accent2); }
+
+  /* ========= FLASHCARDS ========= */
+  #flashcards { align-items: center; background: var(--bg); }
+  .fc-header {
+    width: 100%; background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 14px 16px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow);
+  }
+  .fc-body { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 24px 16px; width: 100%; max-width: 480px; }
+  .fc-counter { font-size: 13px; color: var(--muted); margin-bottom: 16px; font-weight: 500; }
+  .fc-card {
+    width: 100%; background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 18px; min-height: 200px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 28px 24px; cursor: pointer;
+    text-align: center; transition: all .2s; position: relative; box-shadow: var(--shadow-md);
+  }
+  .fc-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(37,99,235,.12); border-color: var(--accent); }
+  .fc-side-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fc-term { font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1.3; }
+  .fc-definition { font-size: 14px; line-height: 1.7; color: var(--text2); }
+  .fc-flip-hint { font-size: 12px; color: var(--muted); margin-top: 16px; }
+  .fc-nav { display: flex; gap: 10px; margin-top: 20px; width: 100%; }
+  .fc-nav button {
+    flex: 1; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 12px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: all .15s; box-shadow: var(--shadow);
+  }
+  .fc-nav button:hover { border-color: var(--accent); color: var(--accent); background: var(--surface2); }
+  .fc-nav button:disabled { opacity: .35; cursor: not-allowed; }
+  .fc-shuffle {
+    margin-top: 10px; width: 100%; background: transparent; border: 1.5px dashed var(--border2);
+    border-radius: var(--radius); padding: 10px; color: var(--muted); font-size: 13px; cursor: pointer;
+    transition: .15s;
+  }
+  .fc-shuffle:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ========= RESULTS ========= */
+  #results { align-items: center; padding: 40px 20px; background: var(--bg); }
+  .results-body { width: 100%; max-width: 440px; }
+  .result-trophy { font-size: 64px; text-align: center; margin-bottom: 16px; }
+  .result-score { font-size: 56px; font-weight: 800; text-align: center; color: var(--accent); }
+  .result-label { text-align: center; color: var(--text2); font-size: 15px; margin-bottom: 24px; margin-top: 4px; }
+  .result-stats {
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow);
+  }
+  .stat-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text2); }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-val { font-weight: 700; color: var(--text); }
+  .stat-val.good { color: var(--green); }
+  .stat-val.bad { color: var(--red); }
+  .result-actions { display: flex; gap: 10px; flex-direction: column; }
+  .btn-secondary {
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 14px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer;
+    width: 100%; transition: .15s; box-shadow: var(--shadow);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ========= OPEN QUESTIONS ========= */
+  .oq-card {
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 22px 20px; margin-bottom: 16px; box-shadow: var(--shadow-md);
+  }
+  .oq-question { font-size: 16px; font-weight: 600; line-height: 1.6; color: var(--text); margin-bottom: 20px; }
+  .oq-answer-wrap { display: none; }
+  .oq-answer-wrap.show { display: block; }
+  .oq-answer-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .oq-answer-text {
+    background: var(--surface3); border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; font-size: 14px; line-height: 1.7; color: var(--text2);
+  }
+  .oq-show-btn {
+    background: var(--accent); color: #fff; border: none; border-radius: var(--radius);
+    padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; transition: .15s;
+  }
+  .oq-show-btn:hover { background: var(--accent2); }
+  .oq-self-eval { display: none; margin-top: 16px; }
+  .oq-self-eval.show { display: block; }
+  .oq-eval-label { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 10px; }
+  .oq-eval-btns { display: flex; gap: 8px; }
+  .oq-eval-btn {
+    flex: 1; border: 2px solid var(--border); border-radius: 10px; padding: 10px 6px;
+    font-size: 12px; font-weight: 700; cursor: pointer; background: var(--surface);
+    text-align: center; transition: .15s; color: var(--text);
+  }
+  .oq-eval-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .oq-eval-btn.knew { border-color: var(--green); }
+  .oq-eval-btn.knew:hover, .oq-eval-btn.knew.selected { background: var(--green-bg); border-color: var(--green); }
+  .oq-eval-btn.partly { border-color: var(--gold); }
+  .oq-eval-btn.partly:hover, .oq-eval-btn.partly.selected { background: #fef3c7; border-color: var(--gold); }
+  .oq-eval-btn.didnt { border-color: var(--red); }
+  .oq-eval-btn.didnt:hover, .oq-eval-btn.didnt.selected { background: var(--red-bg); border-color: var(--red); }
+
+  /* ========= LECTURES ========= */
+  .lecture-card {
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 16px 18px; margin-bottom: 10px; cursor: pointer; display: flex;
+    align-items: center; gap: 14px; box-shadow: var(--shadow); transition: all .15s;
+    text-decoration: none; color: var(--text);
+  }
+  .lecture-card:hover { border-color: var(--accent); background: var(--surface2); transform: translateX(2px); box-shadow: var(--shadow-md); }
+  .lecture-icon { font-size: 28px; flex-shrink: 0; }
+  .lecture-info { flex: 1; }
+  .lecture-name { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .lecture-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .lecture-arrow { font-size: 18px; color: var(--muted); flex-shrink: 0; }
+  .lecture-note {
+    background: #fef9ec; border: 1px solid #fde68a; border-radius: 10px;
+    padding: 12px 14px; font-size: 12px; color: #92400e; margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  #pdfViewer { background: #f5f5f5; height: 100vh; }
+
+  .start-btn {
+    width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius);
+    padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background .15s;
+  }
+  .start-btn:hover { background: var(--accent2); }
+</style>
+</head>
+<body>
+
+<!-- =========== HOME =========== -->
+<div id="home" class="screen active">
+  <div class="home-hero">
+    <div class="home-logo">📦</div>
+    <div class="home-title">Логистика и управление<br>цепями поставок</div>
+    <div class="home-sub">Высшая школа бизнеса НИУ ВШЭ · Проф. Герами</div>
+    <div class="home-badges">
+      <span class="badge">8 тем</span>
+      <span class="badge">160 вопросов</span>
+      <span class="badge">90 флэшкарт · 34 открытых</span>
+    </div>
+  </div>
+
+  <div class="home-body">
+    <div class="section-label">Режим</div>
+    <div class="mode-row">
+      <div class="mode-btn active" data-mode="quiz" onclick="selectMode('quiz',this)">
+        <div class="mode-icon">🧠</div>
+        <div class="mode-name">Квиз</div>
+        <div class="mode-desc">Проверка</div>
+      </div>
+      <div class="mode-btn" data-mode="flashcards" onclick="selectMode('flashcards',this)">
+        <div class="mode-icon">🃏</div>
+        <div class="mode-name">Флэшкарты</div>
+        <div class="mode-desc">Термины</div>
+      </div>
+      <div class="mode-btn" data-mode="openq" onclick="selectMode('openq',this)">
+        <div class="mode-icon">📝</div>
+        <div class="mode-name">Открытые</div>
+        <div class="mode-desc">Вопросы</div>
+      </div>
+      <div class="mode-btn" data-mode="lectures" onclick="selectMode('lectures',this)">
+        <div class="mode-icon">📖</div>
+        <div class="mode-name">Лекции</div>
+        <div class="mode-desc">PDF слайды</div>
+      </div>
+    </div>
+
+    <div class="section-label">Выберите тему</div>
+    <div class="topic-grid" id="topicGrid"></div>
+  </div>
+</div>
+
+<!-- =========== QUIZ =========== -->
+<div id="quiz" class="screen">
+  <div class="quiz-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="quiz-topic" id="quizTopicLabel"></div>
+    <div class="quiz-counter" id="quizCounter">1/20</div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="quiz-body" id="quizBody"></div>
+  <div class="next-btn" id="nextBtn"><button onclick="nextQuestion()">Следующий вопрос →</button></div>
+</div>
+
+<!-- =========== FLASHCARDS =========== -->
+<div id="flashcards" class="screen">
+  <div class="fc-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Флэшкарты</div>
+    <div style="font-size:13px;color:var(--muted);font-weight:500;" id="fcTopicName"></div>
+  </div>
+  <div class="fc-body">
+    <div class="fc-counter" id="fcCounter"></div>
+    <div class="fc-card" id="fcCard" onclick="flipCard()">
+      <div class="fc-side-label" id="fcSideLabel">ТЕРМИН</div>
+      <div class="fc-term" id="fcFront"></div>
+      <div class="fc-definition" id="fcBack" style="display:none;"></div>
+      <div class="fc-flip-hint">👆 Нажмите, чтобы увидеть определение</div>
+    </div>
+    <div class="fc-nav">
+      <button onclick="fcPrev()">← Назад</button>
+      <button onclick="fcNext()">Вперёд →</button>
+    </div>
+    <button class="fc-shuffle" onclick="fcShuffle()">🔀 Перемешать</button>
+  </div>
+</div>
+
+<!-- =========== OPEN QUESTIONS =========== -->
+<div id="openQuestions" class="screen">
+  <div class="quiz-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="quiz-topic" id="oqTopicLabel"></div>
+    <div class="quiz-counter" id="oqCounter"></div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="oqProgressBar"></div></div>
+  <div id="oqBody" style="flex:1;padding:20px 16px;max-width:560px;margin:0 auto;width:100%;"></div>
+  <div class="next-btn" id="oqNextBtn"><button onclick="oqNext()">Следующий вопрос →</button></div>
+</div>
+
+<!-- =========== LECTURES =========== -->
+<div id="lectures" class="screen">
+  <div class="quiz-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="quiz-topic">Лекции</div>
+  </div>
+  <div style="padding:20px 16px;max-width:560px;margin:0 auto;width:100%;">
+    <div id="lectureList"></div>
+  </div>
+</div>
+
+<!-- =========== PDF VIEWER =========== -->
+<div id="pdfViewer" class="screen">
+  <div class="quiz-header">
+    <button class="back-btn" onclick="closePdf()">←</button>
+    <div class="quiz-topic" id="pdfTitle" style="font-weight:600;"></div>
+    <a id="pdfDownload" href="#" target="_blank" style="font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-light);padding:5px 10px;border-radius:8px;text-decoration:none;white-space:nowrap;">⬇ Скачать</a>
+  </div>
+  <iframe id="pdfFrame" style="flex:1;width:100%;border:none;background:#f5f5f5;min-height:0;display:block;" allowfullscreen></iframe>
+</div>
+
+<!-- =========== RESULTS =========== -->
+<div id="results" class="screen">
+  <div class="results-body">
+    <div class="result-trophy" id="resultTrophy">🏆</div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-label" id="resultLabel"></div>
+    <div class="result-stats" id="resultStats"></div>
+    <div class="result-actions">
+      <button class="start-btn" onclick="retryQuiz()">🔄 Пройти снова</button>
+      <button class="btn-secondary" onclick="goHome()">← На главную</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== DATA ====================
+
+const TOPICS = [
+  { id:'t1', name:'Тема 1: Введение в логистику', icon:'📚' },
+  { id:'t2', name:'Тема 2: Цепи поставок', icon:'🔗' },
+  { id:'t3', name:'Тема 3: Прогнозирование и планирование', icon:'📊' },
+  { id:'t4', name:'Тема 4: Снабжение и закупки', icon:'🛒' },
+  { id:'t6', name:'Тема 6: Распределение', icon:'🚚' },
+  { id:'t7', name:'Тема 7: Управление запасами', icon:'📦' },
+  { id:'t8', name:'Тема 8: Инфраструктура', icon:'🏭' },
+  { id:'t9', name:'Тема 9: Логист. услуги и риски', icon:'🛡️' },
+  { id:'all', name:'Все темы', icon:'🎯' },
+];
+
+const QUESTIONS = [
+  // ======= ТЕМА 1: ВВЕДЕНИЕ =======
+  { topic:'t1', type:'mcq', text:'Менеджер выбирает между авиадоставкой (50 000 руб.) и автодоставкой (20 000 руб.). При авиадоставке запасы снизятся на 200 000 руб., при автодоставке — нет. Какой вывод корректен с точки зрения принципа общих затрат?', opts:['Автодоставка выгоднее, так как транспортные расходы ниже','Авиадоставка выгоднее — суммарные затраты на 170 000 руб. меньше','Нельзя сравнивать без данных об уровне сервиса','Выбор зависит от стратегии, а не от затрат'], correct:1, explanation:'Принцип общих затрат: авиа — 50 000 руб. транспорт, но −200 000 руб. запасы = −150 000 руб. Авто — 20 000 руб. транспорт, 0 по запасам = −20 000 руб. Авиадоставка выгоднее на 170 000 руб.' },
+  { topic:'t1', type:'mcq', text:'Что принципиально отличает процессный подход (ПП) от объектного (ОП) при анализе логистической системы?', opts:['ОП изучает только транспорт, ПП — только склады','ОП рассматривает ЛС как совокупность объектов (склады, ТС, товары), ПП — как совокупность взаимосвязанных бизнес-процессов','ПП применяется только в производстве, ОП — в торговле','ОП и ПП — разные названия одного и того же подхода'], correct:1, explanation:'ОП видит «что есть» (объекты-элементы), ПП видит «что происходит» (процессы: планирование, выполнение заказов, транспортировка). На практике применяют оба в зависимости от задачи.' },
+  { topic:'t1', type:'mcq', text:'В 70-е годы в логистике реализовали принцип общих затрат. Что это изменило по сравнению с 60-ми?', opts:['Логистика впервые вышла за пределы одного предприятия','Вместо оптимизации отдельных функций (транспорт, склад) начали оптимизировать совокупные затраты трёх функциональных областей: снабжения, производства и распределения','Компании начали полностью отказываться от запасов','Появились первые цифровые системы управления'], correct:1, explanation:'60-е: бизнес-логистика — осознание роли логистики. 70-е: координирующая логистика — принцип общих затрат применён ко всем трём функциональным областям, появилась координация между ними.' },
+  { topic:'t1', type:'mcq', text:'Walmart управляет цепью поставок, напрямую выбирая поставщиков и устанавливая стандарты VMI. Amazon строит собственные РЦ и управляет «последней милей». В чём их общая роль в ЦП?', opts:['Оба являются 3PL-провайдерами','Оба являются фокусными компаниями своих цепей поставок — принимают ключевые решения по её построению','Оба являются поставщиками первого уровня','Оба используют исключительно аутсорсинг логистики'], correct:1, explanation:'Фокусная компания — та, что принимает основные решения по построению и функционированию ЦП и формирует систему взаимоотношений с партнёрами. Walmart и Amazon — классические примеры.' },
+  { topic:'t1', type:'mcq', text:'Решение о размещении нового распределительного центра принимается на каком уровне планирования и почему?', opts:['Операционном — это ежедневная задача диспетчера','Тактическом — горизонт до полутора лет','Стратегическом — это долгосрочная инвестиция в инфраструктуру с горизонтом несколько лет','Любом — зависит от размера РЦ'], correct:2, explanation:'Стратегический уровень: горизонт — годы, решения необратимы (инвестиции в инфраструктуру). Тактический — неизменная инфраструктура. Операционный — ежедневное выполнение планов.' },
+  { topic:'t1', type:'mcq', text:'BSC (Balanced Scorecard) внедряют в логистике. Показатель «доля заказов, выполненных в срок» относится к составляющей:', opts:['Финансовой — напрямую влияет на выручку','Клиентской — отражает восприятие сервиса клиентами','Внутренних процессов — это операционный показатель логистики','Обучения и развития — зависит от квалификации персонала'], correct:2, explanation:'«Доля заказов в срок» — операционный KPI логистического процесса, составляющая внутренних процессов BSC. Клиентская — это удовлетворённость клиентов, финансовая — выручка и прибыль.' },
+  { topic:'t1', type:'mcq', text:'Компания оптимизирует транспортные расходы и снижает их на 500 тыс. руб. При этом растут запасы на 800 тыс. руб. и теряются продажи из-за задержек — ещё 300 тыс. руб. Это пример:', opts:['Успешной оптимизации — транспортные расходы снижены','Нарушения принципа общих затрат — снижение одной статьи увеличило суммарные затраты на 600 тыс. руб.','Правильной тактики при ограниченном бюджете на транспорт','Типичного результата внедрения JIT'], correct:1, explanation:'Принцип общих затрат: −500 тыс. руб. транспорт, +800 тыс. запасы, +300 тыс. упущенные продажи = +600 тыс. суммарный убыток. Локальная оптимизация ухудшила систему в целом.' },
+  { topic:'t1', type:'mcq', text:'АРЭ и КСЛ — оба российские логистические объединения. В чём ключевое различие?', opts:['АРЭ государственная, КСЛ частная','КСЛ основан в 1997 г., первая в России организация в области ЦП, организует ММЛФ. АРЭ основана в 1991 г., объединяет экспедиторов и логистов, член FIATA','АРЭ занимается только авиаперевозками','КСЛ занимается только складами'], correct:1, explanation:'КСЛ (1997) — первая в России в области цепей поставок, ММЛФ. АРЭ (1991) — ассоциация экспедиторских и логистических организаций, член FIATA (международная федерация экспедиторских ассоциаций).' },
+  { topic:'t1', type:'multi', text:'Что относится исключительно к стратегическому уровню планирования? (несколько)', opts:['Выбор стратегических партнёров и поставщиков','Определение суточных маршрутов транспорта','Проектирование сети складов и РЦ','Управление рисками и устойчивостью ЦП','Нормирование запасов на следующий месяц'], correct:[0,2,3], explanation:'Стратегический уровень: выбор партнёров, проектирование сети (долгосрочные инвестиции), управление рисками. Маршруты — операционный. Нормирование запасов — тактический.' },
+  { topic:'t1', type:'input', text:'Как называется принцип, при котором при принятии логистических решений нужно оценивать совокупность всех затрат по ЦП, а не отдельные статьи?', answer:['принцип общих затрат','общих затрат','total cost'], hint:'Основа «координирующей логистики» 70-х годов.', explanation:'Принцип общих затрат: решение оптимально, когда минимизируются суммарные затраты по всей ЦП, даже если отдельные статьи при этом растут.' },
+  { topic:'t1', type:'match', text:'Соотнесите уровни планирования с типичными решениями:', pairs:[{term:'Стратегический',def:'Проектирование сети складов и выбор стратегических партнёров'},{term:'Тактический',def:'Нормирование запасов и выбор основных маршрутов доставки'},{term:'Операционный',def:'Ежедневная диспетчеризация транспорта и обработка заказов'}], explanation:'Стратегический — долгосрочные инвестиции. Тактический — месяцы, неизменная инфраструктура. Операционный — выполнение здесь и сейчас.' },
+  { topic:'t1', type:'match', text:'Соотнесите компании с их ролью в ЦП:', pairs:[{term:'Walmart',def:'Фокусная компания в розничной торговле: управляет VMI с поставщиками'},{term:'3PL-провайдер (напр. DHL)',def:'Логистический партнёр: выполняет транспортировку и складирование'},{term:'Поставщик сырья',def:'Участник ЦП первого уровня: обеспечивает производство'}], explanation:'Фокусная компания принимает решения по ЦП. Партнёры и поставщики — выполняют условия участия.' },
+
+  // ======= ТЕМА 2: ЦЕПИ ПОСТАВОК =======
+  { topic:'t2', type:'mcq', text:'Производитель электроники держит CODP на складе готовой продукции (MTS). Конкурент применяет ATO. Какое ключевое преимущество получает конкурент?', opts:['Ниже себестоимость производства','Меньший уровень запасов готовой продукции при сохранении приемлемого времени выполнения заказа','Быстрее доставка до клиента','Ниже транспортные расходы'], correct:1, explanation:'ATO: CODP перед финальной сборкой. Запасы хранятся в виде компонентов (дешевле), финальная сборка — под заказ. Время выполнения = время сборки, что часто приемлемо. MTS: готовая продукция дороже хранить, хуже кастомизация.' },
+  { topic:'t2', type:'mcq', text:'Perfect Order Fulfillment = 94%. Что это означает и хорошо ли это?', opts:['94% заказов выполнено хоть как-нибудь — плохой показатель','94% заказов выполнены без отклонений по количеству, качеству, срокам и документам. Норма обычно >95% — нужно улучшать','94% клиентов довольны сервисом — отличный результат','94% заказов отгружено вовремя — достаточно'], correct:1, explanation:'Perfect Order Fulfillment (RL.1.1) — доля заказов, выполненных без единого отклонения: правильный товар, количество, качество, срок, документы. 94% означает, что 6 из 100 заказов имеют проблемы. Норма обычно >95-97%.' },
+  { topic:'t2', type:'mcq', text:'Cash-to-Cash Cycle Time компании составляет 45 дней. Конкурент добился 20 дней. Что это означает для бизнеса конкурента?', opts:['Конкурент медленнее отгружает товары','Деньги конкурента возвращаются в оборот на 25 дней быстрее — это снижает потребность в оборотном капитале','Конкурент работает с меньшим числом клиентов','Конкурент применяет более дорогую логистику'], correct:1, explanation:'Cash-to-Cash = Дни запасов + Дни дебиторки − Дни кредиторки. Чем меньше — тем быстрее деньги возвращаются в оборот. 20 дней vs 45 дней: конкурент на 25 дней эффективнее использует оборотный капитал.' },
+  { topic:'t2', type:'mcq', text:'S-модель (O2C) показывает три потока. Задержка платежа от клиента напрямую повлияет на:', opts:['Только на финансовый поток — оплата задержана','На финансовый поток, и косвенно на материальный — поставщик может приостановить поставки','Только на информационный поток — заказы не будут приняты','На все три потока одновременно и в равной степени'], correct:1, explanation:'Задержка платежа → нарушение финансового потока → поставщик видит неоплаченные счета → приостанавливает поставки → нарушение материального потока. Потоки взаимосвязаны.' },
+  { topic:'t2', type:'mcq', text:'Компания переходит с MTO на MTS для одного из продуктов. Как изменится CODP и что это значит для запасов?', opts:['CODP сдвинется дальше от клиента (глубже в производство), запасы готовой продукции снизятся','CODP сдвинется ближе к клиенту (на склад готовой продукции), запасы готовой продукции вырастут, но время выполнения заказа снизится','CODP не изменится, изменится только скорость производства','CODP исчезнет, так как MTS не использует этот инструмент'], correct:1, explanation:'MTS: CODP на складе готовой продукции — максимально близко к клиенту. Запасы готовой продукции растут (производим по прогнозу), но клиент получает товар быстро (со склада).' },
+  { topic:'t2', type:'mcq', text:'Атрибут Sustainability (EV) в расширенной SCOR-модели. Метрика EV.1.3 — это:', opts:['Доля заказов с нарушением срока (Environmental Violations)','Water Consumed — объём потребляемой воды в цепи поставок','Energy Value — стоимость энергии в затратах ЦП','Employee Variance — текучесть кадров'], correct:1, explanation:'Sustainability (EV, Environmental) — экологические показатели: EV.1.1 Materials Used, EV.1.2 Energy Consumed, EV.1.3 Water Consumed, EV.1.4 GHG Emissions, EV.1.5 Waste Generation.' },
+  { topic:'t2', type:'mcq', text:'Ретейлер замечает: собственные продажи выросли на 3%, но его заказы поставщику выросли на 15%, а заказы поставщика у производителя — на 40%. Это классический пример:', opts:['Успешного роста через всю цепь поставок','Эффекта хлыста — ошибка прогнозирования нарастает при движении вверх по ЦП','Сезонного спроса','Дефицита производственных мощностей'], correct:1, explanation:'Bullwhip Effect: небольшое изменение (+3%) на уровне ретейлера превращается в большое (+15%, +40%) на уровне поставщиков. Причина: каждый участник добавляет «буфер» к своему прогнозу.' },
+  { topic:'t2', type:'mcq', text:'CPFR и VMI — обе концепции направлены на снижение эффекта хлыста. Ключевое отличие:', opts:['VMI используется только в производстве, CPFR — только в ретейле','В VMI поставщик управляет запасами клиента на основе данных о продажах. В CPFR партнёры совместно разрабатывают прогнозы и планы пополнения','CPFR — информационная технология, VMI — физическая','VMI дороже в реализации, чем CPFR'], correct:1, explanation:'VMI: поставщик принимает решения о пополнении сам. CPFR: оба партнёра совместно планируют, прогнозируют и пополняют — более высокий уровень сотрудничества.' },
+  { topic:'t2', type:'multi', text:'Какие атрибуты эффективности SCOR относятся к группе «Economic» (экономические)? (несколько)', opts:['Reliability (RL)','Costs (CO)','Agility (AG)','Profit (PR)','Assets Management (AM)'], correct:[1,3,4], explanation:'Экономические атрибуты SCOR: Costs (CO), Profit (PR), Assets Management (AM). Reliability (RL) и Agility (AG) — операционные.' },
+  { topic:'t2', type:'input', text:'Точка разделения заказов клиентов, где происходит переход от прогнозного к реальному заказу (аббревиатура):', answer:['codp','customer order decoupling point'], hint:'Определяет позицию в ЦП, где прогноз переходит в реальный заказ.', explanation:'CODP (Customer Order Decoupling Point) — граница между push и pull стратегиями в ЦП.' },
+  { topic:'t2', type:'match', text:'Соотнесите метрики SCOR с атрибутами:', pairs:[{term:'Perfect Order Fulfillment',def:'Reliability (RL.1.1)'},{term:'Order Fulfillment Cycle Time',def:'Responsiveness (RS.1.1)'},{term:'Cash-to-Cash Cycle Time',def:'Assets Management (AM.1.1)'},{term:'Total Supply Chain Management Costs',def:'Costs (CO.1.1)'}], explanation:'SCOR метрики уровня 1 привязаны к конкретным атрибутам эффективности.' },
+
+  // ======= ТЕМА 3: ПРОГНОЗИРОВАНИЕ =======
+  { topic:'t3', type:'mcq', text:'Компания прогнозирует спрос на новый продукт, используя исторические данные за 3 года по аналогичному продукту. Какой метод применяется и в чём его риск?', opts:['Метод Дельфи — риск группового мышления','Количественный метод (аналогия с историческими данными) — риск в том, что новый продукт может иметь другую динамику спроса','Метод фокус-групп — риск предвзятости','Метод скользящего среднего — риск запаздывания'], correct:1, explanation:'Использование исторических данных аналогичного продукта — количественный метод. Риск: новый продукт может вести себя иначе (другая аудитория, конкуренция, каналы). Качественные методы могут скорректировать прогноз.' },
+  { topic:'t3', type:'mcq', text:'На каком этапе S&OP менеджеры обнаруживают, что производственные мощности не позволяют удовлетворить прогнозный спрос?', opts:['Этап 1 — Сбор данных','Этап 2 — Разработка прогноза спроса','Этап 3 — Формирование плана поставок: изучаются возможности удовлетворения спроса, выявляются ключевые ограничения','Этап 5 — Совещание руководителей'], correct:2, explanation:'Этап 3 (Формирование плана поставок): изучаются возможности удовлетворения ожидаемого спроса, выявляются ключевые ограничения производства, снабжения, транспорта и складов.' },
+  { topic:'t3', type:'mcq', text:'EDI в концепции ECR — это «информационная основа». Что конкретно она даёт участникам?', opts:['Физическую замену бумажных документов электронными без изменения процессов','Мгновенный обмен структурированными данными (заказы, накладные, прогнозы) в стандартном формате между системами партнёров без ручного ввода','Систему видеонаблюдения за товарными потоками','Единую базу данных клиентов для всей цепи поставок'], correct:1, explanation:'EDI — электронный обмен данными в стандартных форматах. Ключевое: автоматический обмен между ERP-системами партнёров без ручного ввода. Это ускоряет обработку заказов, снижает ошибки, является основой для CPFR и VMI.' },
+  { topic:'t3', type:'mcq', text:'Уровень конвергенции 3 (синхронизация) в SCM. Что отличает его от уровня 4 (оптимизация)?', opts:['На уровне 3 системы только обмениваются данными, а на уровне 4 — принимают решения самостоятельно','На уровне 3 процессы синхронизированы в реальном времени, но оптимизационные решения принимаются обособленно. На уровне 4 — планирование одной функциональной области учитывает другую','На уровне 3 участвуют только 2 системы, на уровне 4 — больше','Разница только в скорости обмена данными'], correct:1, explanation:'Уровень 3: синхронизация данных и времени, но каждая система (например, WMS и TMS) оптимизирует своё. Уровень 4: планирование доставки учитывает загрузку склада — межфункциональная оптимизация.' },
+  { topic:'t3', type:'mcq', text:'GTIN и MDM решают одну проблему, но по-разному. В чём разница?', opts:['GTIN — для маркировки, MDM — для бухгалтерии','GTIN — международный стандарт идентификации товаров (штрих-код). MDM — корпоративная система управления мастер-данными. GTIN стандартизирует идентификатор, MDM управляет всем набором атрибутов товара','GTIN используется только в ретейле, MDM — только в промышленности','Это разные названия одного инструмента'], correct:1, explanation:'GTIN (Global Trade Item Numbers) — стандарт идентификатора товара (штрих-код). MDM (Master Data Management) — система, хранящая и управляющая всеми атрибутами товара (описание, характеристики, фото, условия хранения). Вместе обеспечивают единое информационное пространство.' },
+  { topic:'t3', type:'mcq', text:'Компания внедрила CPFR с ключевым ретейлером. Через месяц система сгенерировала «несоответствие» (exception) по запасам. Что это означает?', opts:['Система сломалась и выдаёт ошибку','Уровень запасов отклонился от согласованных нормативов — партнёры должны совместно проанализировать причину и принять решение','Прогноз оказался точным — никаких действий не нужно','Нужно немедленно сделать экстренный заказ'], correct:1, explanation:'Exception в CPFR — ситуация, выходящая за установленные пороговые значения (запасы, прогноз, план). Система сигнализирует: требуется совместный анализ партнёров и решение. Это рабочий процесс CPFR, не ошибка.' },
+  { topic:'t3', type:'multi', text:'Что конкретно учитывается на этапе «Разработка прогноза спроса» в S&OP? (несколько)', opts:['Исторические данные о продажах','Изменения цен и акции','Действия конкурентов','Производственные мощности завода','Сезонность и демографические тренды'], correct:[0,1,2,4], explanation:'Прогноз спроса: исторические данные, изменения цен, акции, действия конкурентов, сезонность, демографические факторы. Производственные мощности — это ограничение, оно рассматривается на этапе 3 (план поставок).' },
+  { topic:'t3', type:'input', text:'Как называется концепция, включающая EDI, категорийный менеджмент и систему непрерывного пополнения запасов для совместного управления ЦП между производителем и ретейлером?', answer:['ecr','efficient consumer response'], hint:'3 буквы, Efficient Consumer Response.', explanation:'ECR — Efficient Consumer Response: концепция эффективного реагирования на спрос потребителей.' },
+  { topic:'t3', type:'match', text:'Соотнесите уровни конвергенции SCM с примером реализации:', pairs:[{term:'Уровень 2 — транзакции',def:'ERP-системы партнёров обмениваются заказами по EDI, но без синхронизации процессов'},{term:'Уровень 3 — синхронизация',def:'WMS и TMS работают в реальном времени, но оптимизируют каждый своё'},{term:'Уровень 4 — оптимизация',def:'Система планирует маршруты доставки с учётом текущей загрузки склада'},{term:'Уровень 5 — распределение',def:'CPFR: совместное планирование производителя и ретейлера в рамках единой системы'}], explanation:'Каждый уровень добавляет глубину интеграции: от обмена данными до межорганизационных решений.' },
+
+  // ======= ТЕМА 4: СНАБЖЕНИЕ =======
+  { topic:'t4', type:'mcq', text:'В ABC-анализе группа A — 20% ассортимента и 80% продаж. Менеджер предлагает сосредоточить все ресурсы на группе A и полностью автоматизировать управление группой C. Что не так с этим предложением?', opts:['Всё верно, это классическая рекомендация','Группа C требует индивидуального подхода, автоматизация невозможна','Автоматизация группы C разумна, но нельзя игнорировать группу B (30% ассортимента, 15% продаж) — она требует среднего уровня контроля','Группа A требует полной автоматизации, а не группа C'], correct:2, explanation:'ABC-рекомендации: A — тщательный контроль. B — обычный контроль. C — простейший контроль (автоматизация, крупные заказы). Менеджер забыл о группе B, которая нуждается в среднем уровне внимания.' },
+  { topic:'t4', type:'mcq', text:'Завод закупает уникальные высокотехнологичные компоненты у единственного поставщика. Объём закупок небольшой, но без этих компонентов производство встанет. Квадрант матрицы Кралича?', opts:['Стратегические — высокий объём, узкий рынок поставщиков','Некритические — малая значимость','Узкие места — умеренный объём, но критически важный поставщик, уникальные требования','Возможности — большой выбор поставщиков'], correct:2, explanation:'Узкие места (Bottleneck): малый объём стоимости, но сложный рынок поставок. Поставщик критически важен, нет альтернатив. Стратегия: найти альтернативы, создать страховые запасы, развить поставщика.' },
+  { topic:'t4', type:'mcq', text:'Компания переходит с PUSH на PULL стратегию снабжения. Какой риск нужно в первую очередь оценить?', opts:['Рост транспортных расходов из-за крупных партий','Снижение качества товаров при частых поставках','Высокая зависимость от надёжности поставщика — малейший сбой в PULL системе ведёт к остановке производства','Рост административной нагрузки на отдел закупок'], correct:2, explanation:'PULL: регулярные небольшие партии, минимальные запасы. Главный риск: любой сбой у поставщика немедленно влияет на производство — нет буфера в виде запаса. Нужна высокая надёжность поставщика.' },
+  { topic:'t4', type:'mcq', text:'XYZ-анализ: помады CV=0%, туши CV=8.84%, консилеры CV=28.28%. Как управлять запасами каждой группы?', opts:['Все три — одинаково, по модели с фиксированным объёмом','Помады и туши (X): минимальные запасы, точный прогноз. Консилеры (Z): либо большой страховой запас, либо работа под заказ','Консилеры (Z) управляются точно так же, как помады (X)','Помады (X) требуют наибольшего страхового запаса из-за нулевого CV'], correct:1, explanation:'X (CV<10%): стабильный спрос → минимальный запас, частые поставки, точный прогноз. Z (CV>25%): непредсказуемый → большой страховой запас или работа под заказ. CV=0% у помад означает абсолютную стабильность.' },
+  { topic:'t4', type:'mcq', text:'Клиент в VMI устанавливает поставщику минимум 50 ед. и максимум 200 ед. запаса. Текущий уровень — 45 ед. Что должен сделать поставщик?', opts:['Ждать заявки от клиента','Немедленно инициировать поставку, так как запас ниже минимума — решение принимает поставщик самостоятельно','Уведомить клиента и ждать его решения','Ничего — 45 ед. близко к 50 ед.'], correct:1, explanation:'В VMI поставщик сам мониторит запасы клиента и принимает решения о пополнении. Если запас ниже минимума — поставщик самостоятельно инициирует поставку. Именно в этом суть VMI — клиент не занимается управлением заказами.' },
+  { topic:'t4', type:'mcq', text:'AX-группа — высокая выручка и стабильный спрос. AY — высокая выручка, умеренные колебания. AZ — высокая выручка, непредсказуемый спрос. Для AZ правильная стратегия:', opts:['Как для AX — минимальные запасы и частые поставки','Как для AY — оптимизировать по требуемому уровню сервиса','Либо создать большой страховой запас (дорого), либо перейти на работу под заказ (долго) — выбор зависит от стратегии компании','AZ не существует — если выручка высокая, спрос не может быть непредсказуемым'], correct:2, explanation:'AZ: высокая ценность + непредсказуемый спрос. Противоречие: хочется минимизировать запас, но дефицит дорого стоит. Решение: либо большой страховой запас либо MTO — зависит от готовности клиентов ждать.' },
+  { topic:'t4', type:'multi', text:'Что конкретно делает поставщик в рамках VMI? (несколько)', opts:['Постоянно отслеживает уровень запасов у клиента','Самостоятельно принимает решения о необходимости пополнения','Устанавливает цены для конечных покупателей клиента','Определяет размер и момент поставки','Несёт ответственность за уровень сервиса у клиента'], correct:[0,1,3], explanation:'VMI: поставщик мониторит запасы клиента, принимает решения о пополнении, определяет параметры поставки. Цены конечным покупателям устанавливает клиент. Ответственность за сервис — разделяется условиями договора.' },
+  { topic:'t4', type:'input', text:'Как называется метод классификации товаров по ЧАСТОТЕ ИСПОЛЬЗОВАНИЯ и СТАБИЛЬНОСТИ СПРОСА (в отличие от ABC, который классифицирует по ценности)?', answer:['xyz-анализ','xyz','xyz анализ'], hint:'Три буквы алфавита, критерий — коэффициент вариации.', explanation:'XYZ-анализ: X (CV 0-10%) — стабильный, Y (10-25%) — умеренный, Z (>25%) — непредсказуемый спрос.' },
+  { topic:'t4', type:'match', text:'Соотнесите квадранты Кралича со стратегиями закупок:', pairs:[{term:'Стратегические',def:'Долгосрочные партнёрства, совместное развитие, минимум поставщиков'},{term:'Возможности',def:'Активные тендеры, оптовые скидки, несколько конкурирующих поставщиков'},{term:'Узкие места',def:'Поиск альтернатив, страховые запасы, развитие поставщика'},{term:'Некритические',def:'Стандартизация, автозаказы, минимум внимания менеджмента'}], explanation:'Стратегия закупок зависит от квадранта: партнёрство для стратегических, конкуренция для возможностей, защита для узких мест, автоматизация для некритических.' },
+
+  // ======= ТЕМА 6: РАСПРЕДЕЛЕНИЕ =======
+  { topic:'t6', type:'mcq', text:'Производитель люксовых часов (Rolex) продаёт через 2 авторизованных ретейлера в городе. FMCG-производитель (Coca-Cola) — через все доступные точки. В чём логистическое отличие этих стратегий?', opts:['Rolex использует многоканальный сбыт, Coca-Cola — омниканальный','Rolex — эксклюзивный сбыт: контроль над каналом, высокий сервис, ограниченные потоки. Coca-Cola — интенсивный сбыт: максимальный охват, высокая частота поставок, сложная логистика','Оба применяют одинаковую логистику, различается только позиционирование','Rolex применяет прямые продажи, Coca-Cola — через дистрибьюторов'], correct:1, explanation:'Эксклюзивный (Rolex): мало точек, высокие требования к каждой, кастомизированный сервис. Интенсивный (Coca-Cola): максимум точек, стандартизированные поставки, сложная логистика «последней мили».' },
+  { topic:'t6', type:'mcq', text:'Онлайн-ретейлер позволяет клиентам: купить онлайн — получить в магазине (BOPIS), купить в магазине — вернуть онлайн, видеть единые остатки в любом канале. Это классический пример чего?', opts:['Многоканального (multichannel) сбыта — несколько независимых каналов','Омниканального сбыта — все каналы интегрированы с единой информацией о клиентах и запасах','Эксклюзивного сбыта с ограниченным числом каналов','Вертикальной интеграции канала распределения'], correct:1, explanation:'Омниканальность: единые запасы и данные о клиентах независимо от канала. BOPIS (Buy Online, Pick-up In Store), единые возвраты, единые остатки — типичные признаки omnichannel.' },
+  { topic:'t6', type:'mcq', text:'Дистрибьютор vs оптовик. Завод «Балтика» заключает договор с дистрибьютором. Что обязывает дистрибьютора делать то, чего не требуют от обычного оптовика?', opts:['Платить более высокую цену за товар','Поддерживать систему сбыта, обеспечивать прозрачность запасов и принимать условия по территории — в обмен на исключительное право реализации','Хранить товар на собственном складе','Организовывать доставку своим транспортом'], correct:1, explanation:'Дистрибьютор: исключительное право на территории + обязательства по системе сбыта + прозрачность запасов. Оптовик: покупает и перепродаёт без особых обязательств перед поставщиком.' },
+  { topic:'t6', type:'mcq', text:'Товар находится на этапе внедрения жизненного цикла. Как должны вести себя логистические затраты и почему?', opts:['Они минимальны — объёмы маленькие, транспорт дешевле','Они очень высоки — нет статистики продаж, нужна максимальная доступность, создаются избыточные запасы','Они средние — такие же, как на этапе зрелости','Они нулевые — логистика запускается только при этапе роста'], correct:1, explanation:'Внедрение: нет исторических данных, не ясен спрос по регионам. Нужна максимальная доступность → избыточные страховые запасы, широкая дистрибуция, формирование новых каналов. Всё это — высокие удельные логистические затраты.' },
+  { topic:'t6', type:'mcq', text:'В чём принципиальное различие между РЦ и фулфилмент-центром?', opts:['Фулфилмент-центр хранит товары дольше, чем РЦ','РЦ обслуживает точки продаж (магазины), фулфилмент-центр обслуживает конечных потребителей (физических лиц): принимает заказы, кастомизирует, доставляет «до двери», обрабатывает возвраты','Они идентичны — это разные названия одного объекта','РЦ используется только в В2В, фулфилмент-центр — только в В2С'], correct:1, explanation:'РЦ → пункты продаж (магазины). Фулфилмент-центр → конечные потребители. Фулфилмент добавляет: приём онлайн-заказов, кастомизацию, доставку «до двери», обработку возвратов физлиц.' },
+  { topic:'t6', type:'mcq', text:'Кросс-докинг: товар с 5 заводов поступает в центр, сортируется и отгружается в 100 магазинов за 24 часа. Какое условие является критически необходимым для работы кросс-докинга?', opts:['Наличие холодильных камер для товаров','Высокий уровень информационной интеграции — система должна знать заранее, что, откуда и куда','Большое количество стеллажей для временного хранения','Собственный парк транспорта'], correct:1, explanation:'Кросс-докинг без хранения возможен только при высокой информационной интеграции: система заранее знает содержимое каждой машины, куда что распределить. Без этого — хаос.' },
+  { topic:'t6', type:'multi', text:'Что характеризует омниканальный сбыт в отличие от многоканального? (несколько)', opts:['Единая информация о клиентах во всех каналах','Независимость каналов друг от друга','Единые запасы, доступные из любого канала','Возможность вернуть онлайн-покупку в офлайн-магазин','Разные цены в разных каналах'], correct:[0,2,3], explanation:'Омниканальность: единая база клиентов, единые запасы, бесшовный клиентский опыт между каналами. Multichannel: независимые каналы, разные базы, разные запасы.' },
+  { topic:'t6', type:'input', text:'Как называется финальный, наиболее затратный и сложный этап доставки — непосредственно до конечного потребителя?', answer:['последняя миля','last mile'], hint:'Два слова, финальный этап в цепи доставки.', explanation:'«Последняя миля» — наиболее дорогостоящий и сложный этап: финальная доставка до покупателя.' },
+  { topic:'t6', type:'match', text:'Соотнесите типы посредников с их ключевыми характеристиками:', pairs:[{term:'Дистрибьютор',def:'Исключительное право на территории, обязательства по системе сбыта, долгосрочный договор'},{term:'Оптовик',def:'Покупает и перепродаёт, устанавливает цены самостоятельно, нет особых обязательств перед поставщиком'},{term:'Агент',def:'Не приобретает право собственности на товар, работает за комиссию'},{term:'Ретейлер',def:'Конечное звено канала, продаёт непосредственно потребителям'}], explanation:'Тип посредника определяет уровень контроля поставщика и характер договорных отношений.' },
+
+  // ======= ТЕМА 7: ЗАПАСЫ =======
+  { topic:'t7', type:'mcq', text:'EOQ = 100 ед. при S=50 руб., H=10 руб., D=1000 ед/год. Если затраты на хранение вырастут в 4 раза (H=40 руб.), как изменится EOQ?', opts:['EOQ снизится в 4 раза — до 25 ед.','EOQ снизится в 2 раза — до 50 ед., так как EOQ пропорционален √(1/H)','EOQ вырастет, так как хранить дороже','EOQ не изменится — зависит только от спроса'], correct:1, explanation:'EOQ = √(2DS/H). Если H увеличить в 4 раза: EOQ_new = √(2×1000×50/40) = √2500 = 50 ед. EOQ снизился в 2 раза (т.к. корень из 4 = 2). При дорогом хранении выгоднее заказывать чаще и меньше.' },
+  { topic:'t7', type:'mcq', text:'Суточное потребление: 20 ед. Время выполнения заказа: 5 дней. Максимальная задержка: 3 дня. Каков пороговый уровень запаса (точка заказа)?', opts:['100 единиц','160 единиц — (5+3) × 20 = 160','60 единиц — только страховой запас 3×20','80 единиц — только потребление за время выполнения 5×20'], correct:1, explanation:'Точка заказа = потребление за время выполнения + страховой запас = (5×20) + (3×20) = 100 + 60 = 160 ед. Страховой запас = максимальная задержка × суточное потребление = 3×20 = 60 ед.' },
+  { topic:'t7', type:'mcq', text:'Компания применяет модель с фиксированной периодичностью (FRI) для товаров группы А с высоким риском дефицита. Логистик предлагает перейти на FRQ. Почему он прав?', opts:['FRQ позволяет заказывать реже и снижает транспортные расходы','FRQ реагирует на падение запаса немедленно (при достижении точки заказа), а не ждёт следующего периода — для группы A с дорогим дефицитом это критично','FRI лучше для группы A — не требует постоянного мониторинга','FRQ применяется только для группы C'], correct:1, explanation:'FRI: заказ по расписанию — если запас упал резко между периодами, дефицит неизбежен. FRQ: заказ при достижении точки заказа в любой момент → немедленная реакция. Для группы A (дефицит дорого стоит) FRQ предпочтительнее.' },
+  { topic:'t7', type:'mcq', text:'Продавец на маркетплейсе видит рост продаж на 10% и делает заказ поставщику на 30% больше «на всякий случай». Поставщик видит +30% и заказывает у производителя +60%. Производитель запускает дополнительные смены. Как называется это явление?', opts:['Сезонный эффект','Эффект хлыста (Bullwhip Effect) — каждый участник добавляет «буфер» страха, и колебания нарастают','Эффект масштаба в закупках','Плановое увеличение производства'], correct:1, explanation:'Классический Bullwhip Effect: небольшое реальное изменение спроса (+10%) превращается в огромные колебания заказов вверх по цепи. Причина: неопределённость + психологический «буфер безопасности» каждого участника.' },
+  { topic:'t7', type:'mcq', text:'JIT (Just-in-Time) минимизирует запасы. В каком из сценариев JIT наиболее РИСКОВАН?', opts:['Стабильный спрос, надёжный поставщик в 100 км','Единственный поставщик за рубежом, поставки раз в месяц, нестабильная логистика','Массовое производство стандартной продукции','Автоматизированный склад с точным прогнозированием'], correct:1, explanation:'JIT работает при надёжных поставщиках, коротких циклах, предсказуемом спросе. Единственный зарубежный поставщик + длинные циклы + нестабильная логистика = огромный риск остановки производства при любом сбое.' },
+  { topic:'t7', type:'mcq', text:'Циклический контроль запасов vs полная инвентаризация. Главное преимущество циклического контроля:', opts:['Он точнее, чем полная инвентаризация','Не требует остановки работы склада — небольшая часть позиций пересчитывается по графику в рамках обычного рабочего процесса','Он дешевле в 10 раз','Позволяет обнаруживать все недостачи сразу'], correct:1, explanation:'Циклический контроль: пересчёт части позиций по заранее установленному графику без остановки склада. Полная инвентаризация может требовать остановки работы. Циклический интегрируется в рабочий процесс.' },
+  { topic:'t7', type:'multi', text:'Что снижает эффект хлыста в цепи поставок? (несколько)', opts:['Информационная интеграция — EDI, CPFR, общие прогнозы','Увеличение минимального размера партии заказа','Сокращение времени выполнения заказа','VMI — поставщик видит реальный спрос','Переход всех участников на JIT'], correct:[0,2,3], explanation:'Снижают Bullwhip: информационная прозрачность (EDI, CPFR), сокращение Lead Time, VMI (поставщик видит реальные продажи). Увеличение партий — наоборот, усиливает. JIT без прозрачности — тоже риск.' },
+  { topic:'t7', type:'input', text:'Как называется минимальный запас, создаваемый для компенсации задержек поставки и колебаний спроса?', answer:['страховой запас','safety stock'], hint:'Также называется буферным запасом.', explanation:'Страховой запас = максимальная задержка поставки × суточное потребление. Буфер против неопределённости.' },
+  { topic:'t7', type:'match', text:'Соотнесите модели управления запасами с условиями применения:', pairs:[{term:'FRQ (фиксированный объём заказа)',def:'Группа A — дефицит дорого стоит, нужен немедленный отклик при снижении запаса'},{term:'FRI (фиксированная периодичность)',def:'Группа C — административное удобство важнее оптимизации, заказы вместе с другими позициями'},{term:'Минимум-Максимум',def:'Группа B и C — пополнение при достижении нижней границы до верхней'}], explanation:'Выбор модели определяется категорией товара (ABC) и соотношением рисков дефицита и административных затрат.' },
+
+  // ======= ТЕМА 8: ИНФРАСТРУКТУРА =======
+  { topic:'t8', type:'mcq', text:'Склад класса A vs класса B: оба пригодны для хранения. Что является ключевым критерием класса A?', opts:['Наличие сертификата ISO','Новизна постройки — современное каркасное здание с h>12м, спринклерами, доками с уравнительными платформами','Площадь более 10 000 кв. м','Наличие ж/д путей'], correct:1, explanation:'Главный критерий класса A — новизна постройки. Из неё вытекают все остальные характеристики: высота, нагрузка на пол, спринклеры, доки, температурный режим. Класс B — доперестроечные здания.' },
+  { topic:'t8', type:'mcq', text:'WMS или WCS — что управляет роботами-укладчиками в реальном времени?', opts:['WMS — Warehouse Management System — управляет всем включая оборудование','WCS — Warehouse Control System — управляет автоматизированным оборудованием в реальном времени, WMS управляет бизнес-логикой склада','ERP-система напрямую управляет роботами','TMS — Transportation Management System'], correct:1, explanation:'WMS — бизнес-логика: где хранить, куда отправлять, какой маршрут отборщику. WCS — реальное время: управляет конвейерами, сортировщиками, роботами. WCS — посредник между WMS и физическим оборудованием.' },
+  { topic:'t8', type:'mcq', text:'Строится склад для крупного ретейлера: 150 поставщиков, 500 магазинов, 24/7, 15 000 SKU. Какая схема планировки и почему?', opts:['L-схема — компактная для небольших объёмов','U-схема — приёмка и отгрузка рядом, между ними кросс-докинг или быстрый оборот, подходит для любого размера','I-схема — только если есть ж/д с севера и авто с юга','Схема не важна при таком объёме'], correct:1, explanation:'U-схема: зоны приёмки и отгрузки рядом — легко организовать кросс-докинг (150 поставщиков → 500 магазинов). Гибкость для любого размера. I-схема — при чётко выраженном сквозном потоке одного вида транспорта.' },
+  { topic:'t8', type:'mcq', text:'Ричтрак vs вилочный погрузчик: в каком случае нужен именно ричтрак?', opts:['Для работы на открытом воздухе','Для подъёма грузов выше 4-5 метров — ричтрак поднимает до 12 м, обычный погрузчик только до ~3 м','Для перемещения грузов на длинные расстояния внутри склада','Для погрузки в грузовики'], correct:1, explanation:'Вилочный погрузчик: грузоподъёмность 1,5 т, подъём ~3 м. Ричтрак (штабелер с выдвижными вилами): подъём до 12 м, для высоких стеллажей. Выбор зависит от высоты стеллажного хранения.' },
+  { topic:'t8', type:'mcq', text:'Консолидация и деконсолидация — противоположные функции склада. Какой из примеров — деконсолидация?', opts:['4 завода отправляют товары в один РЦ для дальнейшей отправки одному клиенту','РЦ получает крупные партии от производителей и распределяет их по 300 магазинам мелкими партиями','Несколько мелких партий объединяются в одну машину для снижения транспортных затрат','Производитель консолидирует заказы нескольких клиентов в один грузовик'], correct:1, explanation:'Деконсолидация: одна крупная партия → множество мелких получателей (300 магазинов). Консолидация: множество мелких источников → один поток. В реальности РЦ выполняет обе функции одновременно.' },
+  { topic:'t8', type:'mcq', text:'Грузовая площадь склада (непосредственно под хранение) составляет 35-45% от общей. Куда уходят остальные 55-65%?', opts:['Всё под офисы администрации','Вспомогательная площадь (проходы, проезды) — 30-40%, операционная (приёмка, комплектация, кросс-докинг) — 5-10%, зона экспедиций — 15-20%','Всё под погрузочно-разгрузочные работы','Под парковку транспорта'], correct:1, explanation:'Склад: хранение 35-45%, вспомогательная (проходы) 30-40%, операционная 5-10%, экспедиции 15-20%. Важно: много площади уходит на проходы — это неизбежно при стеллажном хранении с техникой.' },
+  { topic:'t8', type:'multi', text:'Какие условия необходимы для эффективного кросс-докинга? (несколько)', opts:['Высокий уровень информационной интеграции с партнёрами','Большие зоны стеллажного хранения','Широкий ассортимент и много поставщиков','Отлаженные бизнес-процессы и точность поставок','Собственный парк из более 100 машин'], correct:[0,2,3], explanation:'Кросс-докинг требует: информационной интеграции (заранее знать что куда), широкого ассортимента и поставщиков (есть что консолидировать), отлаженных процессов. Стеллажи не нужны — хранения нет.' },
+  { topic:'t8', type:'input', text:'Какой процент от общей площади склада занимает грузовая площадь (непосредственно под хранение)?', answer:['35-45%','35-45','35 45'], hint:'Больше трети, но меньше половины.', explanation:'Грузовая площадь — 35-45%. Вспомогательная — 30-40%, операционная — 5-10%, экспедиции — 15-20%.' },
+  { topic:'t8', type:'match', text:'Соотнесите типы складских объектов с их ключевой функцией:', pairs:[{term:'Транспортный терминал',def:'Кросс-докинг: быстрая перевалка грузов без стеллажного хранения, доки по всем стенам'},{term:'Распределительный центр',def:'Хранение + сортировка + комплектация для точек продаж, ключевой элемент управления запасами'},{term:'Фулфилмент-центр',def:'Обслуживание конечных потребителей: приём заказов, доставка до двери, возвраты'},{term:'Производственный склад',def:'Краткосрочное хранение сырья и компонентов при производстве, синхронизация с производственным графиком'}], explanation:'Каждый тип объекта решает свою задачу в ЦП. На практике границы могут быть размыты.' },
+
+  // ======= ТЕМА 9: УСЛУГИ И РИСКИ =======
+  { topic:'t9', type:'mcq', text:'Компания выбирает между 3PL и 4PL для аутсорсинга логистики. В чём ключевое различие с практической точки зрения?', opts:['4PL дороже по определению, 3PL всегда дешевле','3PL обслуживает конкретные функции логистики и владеет активами. 4PL управляет всей ЦП и координирует нескольких 3PL — это мета-уровень управления, обычно без собственных активов','3PL и 4PL — разные названия одного и того же','4PL работает только в международной логистике'], correct:1, explanation:'3PL: конкретные функции (транспорт + склад), владеет терминалами. 4PL: управляет всей ЦП клиента, координирует 3PL-операторов. 4PL — «мозг», 3PL — «руки». Часто 4PL не владеет физическими активами.' },
+  { topic:'t9', type:'mcq', text:'Компания работала по принципу «минимальные запасы, единственный поставщик, JIT». В пандемию поставки прервались на 3 месяца. Какая системная ошибка была допущена?', opts:['Ошибка в прогнозировании спроса','Ориентация на максимальную операционную эффективность в ущерб надёжности и устойчивости ЦП','Неправильный выбор поставщика','Отсутствие WMS-системы'], correct:1, explanation:'Общая проблема ЦП кризисных лет: в период роста «подзабыты» инструменты управления рисками (диверсификация поставщиков, страховые запасы, планы B). Погоня за эффективностью создала хрупкость.' },
+  { topic:'t9', type:'mcq', text:'Nearshoring называют также «China+». Что означает «+» в этом названии?', opts:['Надбавка к цене китайских товаров','«China+1» — сохранение части поставок из Китая + добавление поставщиков в других странах для диверсификации риска','Дополнительные таможенные пошлины','Китай плюс соседние страны как единый регион'], correct:1, explanation:'«China+1» — глобальная стратегия: не отказываться полностью от Китая, а добавить одного или нескольких поставщиков в других странах (Индия, Вьетнам, Мексика). Диверсификация, а не замена.' },
+  { topic:'t9', type:'mcq', text:'Треугольник стабильности по Barroso: компания после кризиса восстановилась и вышла на показатели выше докризисных. Как Талеб назвал бы это свойство системы?', opts:['Устойчивостью (resilience)','Антихрупкостью — система не просто выдержала стресс, но стала сильнее под его воздействием','Гибкостью (agility)','Надёжностью (reliability)'], correct:1, explanation:'Антихрупкость (Талеб): система усиливается под воздействием стресса. Устойчивость — вернуться к прежнему уровню (вариант 1). Антихрупкость — превысить прежний уровень (вариант 3 треугольника Barroso).' },
+  { topic:'t9', type:'mcq', text:'3PL-провайдер объединяет грузы поставщика A и поставщика C в одну машину для доставки к покупателям B и D. Какую выгоду это создаёт?', opts:['Только удобство для поставщиков — меньше машин нужно организовывать','Экономия для обоих поставщиков за счёт консолидации грузов — крупнотоннажная перевозка дешевле нескольких мелких','Ускорение доставки','Снижение таможенных пошлин'], correct:1, explanation:'3PL объединяет грузопотоки нескольких клиентов (эффект масштаба): вместо 2 полупустых машин — 1 полная. Это одна из ключевых ценностей 3PL — интеграция потоков разных клиентов.' },
+  { topic:'t9', type:'mcq', text:'Компания реализует стратегию nearshoring для российского рынка. Турецкий поставщик выбран как основной альтернативный. Какой специфический риск нужно оценить в первую очередь?', opts:['Языковой барьер — в Турции не говорят по-русски','Риски вторичных санкций — Турция может подвергнуться давлению за сотрудничество с российскими компаниями','Качество турецких товаров','Расстояние — Турция слишком далеко'], correct:1, explanation:'Для российских компаний риски вторичных санкций — ключевой специфический риск nearshoring. Турция неоднократно сталкивалась с давлением из-за торговли с Россией. Остальные риски (язык, качество) — преодолимы.' },
+  { topic:'t9', type:'multi', text:'Что принципиально отличает 3PL-провайдера от простого транспортного подрядчика? (несколько)', opts:['Владение терминалами — хабами в логистике клиента','Предоставление только транспортных услуг','Интеграция товарных потоков разных клиентов (эффект масштаба)','Профессиональные знания в управлении логистикой','Работа только с одним клиентом'], correct:[0,2,3], explanation:'3PL: собственные терминалы-хабы, интеграция потоков нескольких клиентов (эффект масштаба), профессиональные знания в управлении. Простой перевозчик — только транспорт для одного клиента.' },
+  { topic:'t9', type:'input', text:'Как называется глобальная стратегия поиска поставщиков в географически близких или политически «дружественных» странах (английский термин из 2 слов)?', answer:['nearshoring','china+','near shoring'], hint:'Near = ближний, противоположность offshoring.', explanation:'Nearshoring / China+1 — диверсификация ЦП: добавление поставщиков в близких странах без полного отказа от прежних.' },
+  { topic:'t9', type:'match', text:'Соотнесите варианты «Треугольника стабильности» с результатом для компании:', pairs:[{term:'Вариант 1',def:'Параметр ЦП восстанавливается до докризисного уровня — устойчивость'},{term:'Вариант 2',def:'Параметр не восстанавливается полностью — частичная потеря позиций'},{term:'Вариант 3',def:'Параметр превышает докризисный уровень — антихрупкость по Талебу'}], explanation:'Вариант 3 — наилучший: кризис использован как возможность стать сильнее (новые поставщики, автоматизация, диверсификация).' },
+];
+
+
+const FLASHCARDS = [
+  // Тема 1
+  { topic:'t1', term:'Логистика', def:'Наука и практика рационального управления материальными, информационными и финансовыми потоками в цепях поставок.' },
+  { topic:'t1', term:'Фокусная компания', def:'Компания, принимающая ключевые решения по построению и функционированию ЦП, формирующая систему взаимоотношений с партнёрами.' },
+  { topic:'t1', term:'Логистическая стратегия', def:'Часть корпоративной стратегии, направленная на оптимизацию процессов управления материальными потоками.' },
+  { topic:'t1', term:'Объектный подход (ОП)', def:'Рассматривает ЛС как совокупность объектов: товары, склады, транспортные средства.' },
+  { topic:'t1', term:'Процессный подход (ПП)', def:'Рассматривает ЛС как совокупность взаимосвязанных бизнес-процессов: планирование, складирование, транспортировка.' },
+  { topic:'t1', term:'Принцип общих затрат', def:'При логистических решениях учитывается совокупность затрат по всей ЦП, а не отдельные статьи.' },
+  { topic:'t1', term:'КСЛ', def:'Координационный совет по логистике, основан 1997 г. Первая в России организация в области ЦП, организует ММЛФ.' },
+  { topic:'t1', term:'АРЭ', def:'Российская ассоциация экспедиторских и логистических организаций, основана 1991 г., член FIATA.' },
+  { topic:'t1', term:'BSC в логистике', def:'Balanced Scorecard: корпоративные цели трансформируются в KPI логистики через 4 составляющие (финансы, клиенты, процессы, обучение).' },
+  { topic:'t1', term:'Материальный поток', def:'Движение товаров/грузов в ЦП. Запас — материальный поток с нулевой скоростью.' },
+  { topic:'t1', term:'Эпоха «Бизнес-логистики» (60-е)', def:'Зарождение концепции в бизнесе: рост международной торговли, доля транспортных издержек в цене, зарождение маркетинга.' },
+  { topic:'t1', term:'Эпоха «Координирующей логистики» (70-е)', def:'Принцип общих затрат применён в трёх функциональных областях: снабжение, производство, распределение.' },
+  { topic:'t1', term:'Эпоха «Цепей поставок» (80-е)', def:'Интеграция логистических функций вышла за пределы предприятия, сформировав концепцию УЦП.' },
+  // Тема 2
+  { topic:'t2', term:'SCOR-модель', def:'Supply Chain Operations Reference — наиболее универсальная референтная модель операций ЦП. 6 процессов: PLAN, ORDER, SOURCE, TRANSFORM, FULFIL, RETURN.' },
+  { topic:'t2', term:'CODP', def:'Customer Order Decoupling Point — граница между выталкивающей (прогноз) и тянущей (реальный заказ) стратегиями.' },
+  { topic:'t2', term:'MTS (Make-to-Stock)', def:'Производство на склад: выталкивающая стратегия по прогнозируемому спросу. CODP на складе готовой продукции.' },
+  { topic:'t2', term:'ATO (Assemble-to-Order)', def:'Сборка под заказ: компоненты хранятся, финальная сборка — по заказу. CODP перед финальной сборкой.' },
+  { topic:'t2', term:'MTO (Make-to-Order)', def:'Производство под заказ: производство начинается только после получения заказа клиента. CODP в начале производства.' },
+  { topic:'t2', term:'S-модель (O2C)', def:'Order-to-Cash — иллюстрирует три потока: заказов, товаров и платежей между производителем и потребителем.' },
+  { topic:'t2', term:'CPFR', def:'Collaborative Planning, Forecasting and Replenishment — совместное планирование, прогнозирование и пополнение запасов участниками ЦП.' },
+  { topic:'t2', term:'Perfect Order Fulfillment (RL.1.1)', def:'Метрика надёжности (Reliability) в SCOR: доля заказов без отклонений по количеству, качеству, срокам и документам.' },
+  { topic:'t2', term:'Cash-to-Cash Cycle Time (AM.1.1)', def:'Метрика управления активами в SCOR: время от оплаты поставщику до получения оплаты от клиента.' },
+  { topic:'t2', term:'Атрибут Agility (AG)', def:'Гибкость ЦП — способность адаптироваться к изменениям рынка. Метрика AG.1.1: Supply Chain Agility.' },
+  // Тема 3
+  { topic:'t3', term:'S&OP', def:'Sales & Operations Planning — балансирование планов продаж и операций. 5 этапов: сбор данных → прогноз → план поставок → проверка → совещание.' },
+  { topic:'t3', term:'Метод Дельфи', def:'Качественный метод прогнозирования: итеративные анонимные опросы экспертов с обратной связью до консенсуса.' },
+  { topic:'t3', term:'ECR', def:'Efficient Consumer Response — концепция эффективного реагирования на спрос: EDI + категорийный менеджмент + непрерывное пополнение + кросс-докинг.' },
+  { topic:'t3', term:'EDI', def:'Electronic Data Interchange — электронный обмен данными, информационная основа концепции ECR.' },
+  { topic:'t3', term:'RFID', def:'Radio Frequency Identification — радиочастотная идентификация. Радиоволны для автоматической идентификации объектов через метки.' },
+  { topic:'t3', term:'GTIN', def:'Global Trade Item Numbers — международная система унификации мастер-данных для идентификации товаров.' },
+  { topic:'t3', term:'MDM', def:'Master Data Management — системы управления едиными мастер-данными в ЦП.' },
+  { topic:'t3', term:'5 уровней конвергенции SCM', def:'1-аналитика, 2-транзакции, 3-синхронизация (реальное время), 4-оптимизация (между функциями), 5-распределение (между организациями).' },
+  { topic:'t3', term:'Операционное планирование', def:'Ежедневное выполнение планов и адаптация. Горизонт: от одного дня до нескольких недель.' },
+  { topic:'t3', term:'Тактическое планирование', def:'Горизонт от месяца до полутора лет. Неизменная инфраструктура, объёмное планирование, высокая детализация.' },
+  // Тема 4
+  { topic:'t4', term:'Матрица Кралича', def:'Классификация закупок: ось X — сложность рынка, ось Y — объём стоимости. 4 квадранта: стратегические, возможности, узкие места, некритические.' },
+  { topic:'t4', term:'ABC-анализ', def:'Принцип Парето: A — 20% ассортимента, 80% продаж; B — 30%/15%; C — 50%/5%.' },
+  { topic:'t4', term:'XYZ-анализ', def:'Классификация по стабильности спроса: X (CV 0-10%) — стабильный; Y (10-25%) — умеренный; Z (>25%) — непредсказуемый.' },
+  { topic:'t4', term:'Группа AX', def:'Высокая выручка (A) + стабильный спрос (X). Самые приоритетные товары: расширять ассортимент, поднимать продажи.' },
+  { topic:'t4', term:'Группа AY', def:'Высокая выручка (A) + умеренные колебания (Y). Нужно выяснить причины колебаний, учитывать сезонность.' },
+  { topic:'t4', term:'Группа CZ', def:'Низкая выручка (C) + непредсказуемый спрос (Z). Оставить только универсальные позиции, остальные вывести.' },
+  { topic:'t4', term:'VMI', def:'Vendor Managed Inventory — поставщик самостоятельно управляет запасами клиента: мониторинг + решения о пополнении + параметры заказа + поставка.' },
+  { topic:'t4', term:'SRM', def:'Supplier Relationship Management — ИС для автоматизации взаимодействия с поставщиками: регистрация, оценка, контракты, тендеры.' },
+  { topic:'t4', term:'PUSH (толкающая стратегия)', def:'Редкие крупные партии. + независимость от поставщика, гибкость. − высокий уровень запасов.' },
+  { topic:'t4', term:'PULL (тянущая стратегия)', def:'Регулярные небольшие партии. + минимальные запасы. − высокие риски при сбоях, нужна тесная координация.' },
+  { topic:'t4', term:'IVM', def:'Industry Vending Machines — промышленные вендинговые автоматы: хранят, выдают и инвентаризируют инструменты на производстве.' },
+  { topic:'t4', term:'Коэффициент вариации', def:'CV = σ/μ × 100%. Критерий XYZ: X (<10%), Y (10-25%), Z (>25%).' },
+  // Тема 6
+  { topic:'t6', term:'Кросс-докинг', def:'Переформирование потоков без промежуточного хранения. Снижает запасы, ускоряет товародвижение, снижает риск просрочки.' },
+  { topic:'t6', term:'Фулфилмент-центр', def:'РЦ для конечных потребителей: приём заказов, кастомизация, доставка «до двери», обработка возвратов.' },
+  { topic:'t6', term:'Омниканальный сбыт', def:'Интеграция всех каналов (магазин, онлайн, маркетплейс) с единой информацией о клиентах, товарах и заказах.' },
+  { topic:'t6', term:'Многоканальный сбыт', def:'Несколько независимых каналов без интеграции. Нет единой базы клиентов. Товароориентированный подход.' },
+  { topic:'t6', term:'Эксклюзивный сбыт', def:'Права — ограниченному числу посредников. Максимальный контроль. Для премиальных брендов (авто, люкс).' },
+  { topic:'t6', term:'Интенсивный сбыт', def:'Максимальное присутствие в торговых точках. При стратегии широкого охвата рынка (товары FMCG).' },
+  { topic:'t6', term:'Последняя миля', def:'Финальный наиболее затратный этап доставки непосредственно до конечного потребителя.' },
+  { topic:'t6', term:'Горизонтальная интеграция', def:'Объединение компаний одного уровня канала (нескольких дистрибьюторов или ретейлеров).' },
+  { topic:'t6', term:'Вертикальная интеграция', def:'Объединение разных уровней канала: имущественная (слияния) или договорная (франчайзинг, кооперативы).' },
+  { topic:'t6', term:'Дистрибьютор', def:'Посредник с исключительным правом реализации на территории, работает по договору оптового распределения товаров.' },
+  { topic:'t6', term:'White Glove Logistics', def:'Премиальный сервис для дорогих/хрупких товаров: специальная упаковка, транспортировка, установка, наладка.' },
+  // Тема 7
+  { topic:'t7', term:'EOQ (формула Уилсона)', def:'EOQ = √(2DS/H). D — годовое потребление, S — затраты на заказ, H — хранение единицы в год. Минимизирует общие затраты. 1915 г.' },
+  { topic:'t7', term:'Страховой запас', def:'= максимальная задержка поставки × суточное потребление. Буфер против сбоев.' },
+  { topic:'t7', term:'Точка заказа (пороговый уровень)', def:'= потребление за время выполнения заказа + страховой запас. При достижении — размещается заказ.' },
+  { topic:'t7', term:'Максимальный желательный запас', def:'= страховой запас + объём заказа. Верхняя граница управления запасами.' },
+  { topic:'t7', term:'Эффект хлыста (Bullwhip)', def:'Нарастание ошибки прогнозирования вверх по ЦП: малые колебания у клиента → большие у поставщика.' },
+  { topic:'t7', term:'Модель FRQ (фикс. объём)', def:'Постоянный размер заказа. Заказ при достижении точки заказа. Непрерывный мониторинг. Для группы A.' },
+  { topic:'t7', term:'Модель FRI (фикс. периодичность)', def:'Заказ по расписанию с переменным объёмом. Нет постоянного мониторинга. Больше риск дефицита.' },
+  { topic:'t7', term:'JIT (Just-in-Time)', def:'«Точно вовремя» — минимизация запасов: материалы поступают в момент потребности. Реализовано в Toyota Production System.' },
+  { topic:'t7', term:'Циклический контроль запасов', def:'Пересчёт части запасов по графику без остановки работы. В отличие от полной инвентаризации — непрерывный процесс.' },
+  { topic:'t7', term:'WMS (как инструмент управления запасами)', def:'Warehouse Management System — отслеживает адрес каждой позиции при динамическом хранении, планирует пополнение.' },
+  // Тема 8
+  { topic:'t8', term:'ABCD-классификация складов', def:'A — современные (h>12м, спринклеры, доки). B — доперестроечные. C — бывшие производственные. D — гаражи, подвалы.' },
+  { topic:'t8', term:'Распределительный центр (РЦ)', def:'Фокус на хранении и распределении больших объёмов. Часто с ж/д путями. Ключевой элемент управления запасами.' },
+  { topic:'t8', term:'WMS', def:'Warehouse Management System — нужна при >1000 артикулов или >1000 кв.м. Маршрутизация, сроки годности, динамическое хранение.' },
+  { topic:'t8', term:'WCS', def:'Warehouse Control System — управляет автоматизированным оборудованием в реальном времени. Посредник WMS ↔ роботы/конвейеры.' },
+  { topic:'t8', term:'Кросс-докинг (преимущества)', def:'Нет хранения, снижение запасов, меньше площадей, ускорение товародвижения, снижение риска просрочки, меньше документооборота.' },
+  { topic:'t8', term:'U-схема склада', def:'Зоны погрузки/разгрузки рядом (можно состыковать). Между ними — кросс-докинг или быстрый оборот. Для любого размера.' },
+  { topic:'t8', term:'I-схема склада', def:'Сквозной поток: приёмка с одной стороны, отгрузка с другой. Большие объёмы, смешанный транспорт (ж/д + авто).' },
+  { topic:'t8', term:'L-схема склада', def:'Для складов с малыми и средними объёмами хранения. Зоны приёмки и отгрузки под прямым углом.' },
+  { topic:'t8', term:'Ричтрак', def:'Штабелер с выдвижными вилами. Высота подъёма до 12 м. Для узких проходов и высоких стеллажей.' },
+  { topic:'t8', term:'Вилочный погрузчик', def:'Грузоподъёмность 1,5 т, высота подъёма ~3 м. Стандартное оборудование для напольного хранения и доков.' },
+  { topic:'t8', term:'Динамическое хранение', def:'Товар на любое свободное место. WMS отслеживает адрес каждой позиции. Повышает использование площади.' },
+  { topic:'t8', term:'Консолидация (функция склада)', def:'Объединение партий от нескольких поставщиков в единую отправку для одного потребителя.' },
+  { topic:'t8', term:'Зоны склада', def:'Разгрузка → Приёмка → Хранение → Комплектация → Отгрузка (экспедиция). Дополнительно: кросс-докинг, зона брака, зона возврата тары.' },
+  // Тема 9
+  { topic:'t9', term:'3PL-провайдер', def:'Third Party Logistics: комплексный аутсорсинг. Владеет активами (терминалами-хабами), интегрирует потоки нескольких клиентов.' },
+  { topic:'t9', term:'4PL-провайдер (LLP)', def:'Lead Logistics Provider: управляет всей ЦП клиента, координирует нескольких 3PL. Обычно без собственных активов.' },
+  { topic:'t9', term:'TMS', def:'Transportation Management System — ИС для транспорта: планирование, маршрутизация, тендеры, мониторинг, интеграция с партнёрами.' },
+  { topic:'t9', term:'Nearshoring (China+)', def:'Поиск поставщиков в близких или дружественных странах. Для России — часто единственная реальная альтернатива.' },
+  { topic:'t9', term:'«Чёрный лебедь» (Талеб)', def:'Непредвиденное событие с огромными последствиями. Сочетание финансового кризиса + пандемии + санкций имеет его признаки.' },
+  { topic:'t9', term:'Реконфигурация ЦП', def:'Комплекс действий по обеспечению стабильности в условиях неопределённости: смена поставщиков, маршрутов, участников.' },
+  { topic:'t9', term:'Треугольник стабильности (Barroso)', def:'3 варианта восстановления: 1) полное восстановление, 2) частичное, 3) превышение прежнего уровня (антихрупкость).' },
+  { topic:'t9', term:'Антихрупкость (Талеб)', def:'Свойство ЦП становиться сильнее после кризиса. Вариант 3 треугольника Barroso — параметры превышают докризисный уровень.' },
+  { topic:'t9', term:'Локализация поставок', def:'Стратегия реконфигурации: перевод закупок на отечественных поставщиков для снижения зависимости от импорта.' },
+  { topic:'t9', term:'CAGR рынка логистики (2023-2030)', def:'17.1% в год. Рынок вырастет с $4.09 трлн (2022) до $12.09 трлн (2030).' },
+  { topic:'t9', term:'Три кризисных фактора (2020-е)', def:'Мировой финансово-экономический кризис + пандемия COVID-19 + экономические санкции. Сочетание — признаки «чёрного лебедя».' },
+];
+
+
+
+const OPEN_QUESTIONS = [
+  // Тема 1
+  { topic:'t1', question:'Объясните принцип общих затрат в логистике. Приведите пример, когда более дорогой вариант доставки оказывается выгоднее с точки зрения совокупных затрат.', answer:'Принцип общих затрат: при принятии решений нужно оценивать не отдельные статьи затрат, а их совокупность по всей ЦП. Пример: авиадоставка дороже автомобильной, но позволяет снизить запасы на $200 тыс. и избежать упущенных продаж на $150 тыс. — суммарно выгоднее. Или: замена нескольких дешёвых складов одним дорогим, но центральным, снижает общие затраты за счёт консолидации.' },
+  { topic:'t1', question:'Чем отличается объектный подход от процессного в управлении логистическими системами? Когда применяется каждый?', answer:'Объектный подход (ОП): рассматривает ЛС как совокупность объектов — товары, склады, транспортные средства. Удобен для проектирования инфраструктуры, размещения объектов. Процессный подход (ПП): рассматривает ЛС как совокупность взаимосвязанных бизнес-процессов (планирование, выполнение заказов, транспортировка). Удобен для оптимизации операций, внедрения SCM-систем. На практике применяются оба — в зависимости от задачи.' },
+  { topic:'t1', question:'Опишите три исторических этапа развития логистики (60-е, 70-е, 80-е годы). Что принципиально менялось на каждом этапе?', answer:'60-е — «Бизнес-логистика»: рост международной торговли, доля транспортных издержек, зарождение маркетинга. Логистика осознана как функция бизнеса. 70-е — «Координирующая логистика»: принцип общих затрат применён к трём областям (снабжение, производство, распределение). Координация между функциями. 80-е — «Цепи поставок»: интеграция вышла за пределы предприятия. Управление охватывает всех участников — от поставщика до потребителя.' },
+  { topic:'t1', question:'Что такое фокусная компания в цепи поставок? Чем она отличается от других участников? Приведите 2-3 примера.', answer:'Фокусная компания — принимает основные решения по построению и функционированию ЦП, формирует систему взаимоотношений с потребителями и партнёрами. Отличие: именно она определяет структуру ЦП, выбирает партнёров, устанавливает стандарты. Примеры: Walmart (ретейл) — управляет цепью от производителей до полок; Toyota (авто) — строит отношения с поставщиками 1-го, 2-го уровня; Apple — диктует условия контрактным производителям.' },
+  { topic:'t1', question:'Объясните разницу между стратегическим, тактическим и операционным уровнями планирования в логистике.', answer:'Стратегический: горизонт — годы. Решения: стратегия ЦП, проектирование сети, выбор стратегических партнёров, управление рисками. Неизменяемые — долгосрочные инвестиции. Тактический: горизонт — месяцы до полутора лет. Неизменная инфраструктура. Решения: маршруты, нормативы запасов, структура привязки клиентов. Операционный: горизонт — дни/недели. Ежедневное выполнение планов, диспетчеризация, адаптация к реальным условиям.' },
+
+  // Тема 2
+  { topic:'t2', question:'Объясните концепцию CODP (Customer Order Decoupling Point). Как его положение влияет на стратегию компании?', answer:'CODP — точка разделения заказов клиентов: граница, где прогнозный (выталкивающий) поток переходит в реальный заказ (тянущий). До CODP — производство/закупки по прогнозу. После CODP — по реальному заказу. Чем ближе CODP к клиенту (MTS) — ниже время выполнения заказа, выше запасы. Чем дальше (ETO) — длиннее время выполнения, ниже запасы. Компания выбирает позицию CODP исходя из баланса между скоростью обслуживания и уровнем запасов.' },
+  { topic:'t2', question:'Перечислите 6 процессов первого уровня SCOR-модели и кратко опишите каждый.', answer:'PLAN — планирование: разработка планов функционирования ЦП для остальных процессов. ORDER — заказ: деятельность, связанная с обработкой заказов клиентов. SOURCE — закупка: приобретение, заказ и доставка товаров и услуг. TRANSFORM — преобразование: производство, сборка, монтаж, ремонт — любые изменения продуктов. FULFIL — выполнение: исполнение заказов клиентов, доставка, выставление счетов. RETURN — возврат: обратный поток товаров, услуг и компонентов от клиента по ЦП.' },
+  { topic:'t2', question:'Что такое эффект хлыста (Bullwhip Effect)? Каковы его причины и последствия для ЦП?', answer:'Эффект хлыста — нарастание ошибки прогнозирования при движении вверх по ЦП: небольшие колебания спроса у конечного потребителя превращаются в значительные колебания заказов у поставщиков. Причины: ошибки прогнозирования, «оптовые» заказы, игры с ценами и запасами, длинные циклы поставки. Последствия: избыточные запасы во всех звеньях, дефицит у конечных пользователей, увеличение цикла выполнения заказа, конфликты между участниками ЦП.' },
+  { topic:'t2', question:'Сравните S-модель (Order-to-Cash) с концепцией цепи поставок. Какие три потока она иллюстрирует?', answer:'S-модель (O2C) — наглядное представление трёх ключевых потоков между производителем и потребителем: 1) Поток заказов (заказы движутся от потребителя к производителю), 2) Поток товаров (движется от производителя к потребителю), 3) Поток платежей (от потребителя к производителю). Модель показывает взаимосвязь и взаимозависимость потоков: задержка в одном (например, некорректный заказ) нарушает весь цикл.' },
+
+  // Тема 3
+  { topic:'t3', question:'Опишите пять этапов процесса S&OP. Какова цель каждого этапа?', answer:'1. Сбор данных: результаты предыдущего периода, рыночные тенденции, оценка точности прогноза. 2. Разработка прогноза спроса: выявление закономерностей, учёт сезонности, цен, конкурентов. 3. Формирование плана поставок: изучение возможностей удовлетворения спроса, ключевые ограничения. 4. Проверка и согласование планов: увязка между собой и с финансовым планом. 5. Совещание руководителей и утверждение: сбалансированный план передаётся на финальное утверждение высшим руководством.' },
+  { topic:'t3', question:'Чем качественные методы прогнозирования отличаются от количественных? Когда применять каждый вид?', answer:'Качественные: опираются на субъективные оценки, мнения экспертов, интуицию. Методы: метод Дельфи, фокус-группы, экспертные панели. Применяются: при отсутствии исторических данных (новый продукт), высокой неопределённости. Количественные: математические модели на основе исторических данных. Методы: скользящее среднее, экспоненциальное сглаживание, регрессия, временные ряды. Применяются: при наличии данных, относительно стабильном спросе. На практике используются оба: количественные для расчётов, качественные для корректировки.' },
+  { topic:'t3', question:'Что такое ECR (Efficient Consumer Response)? Перечислите основные компоненты этой концепции.', answer:'ECR — концепция эффективного реагирования на спрос потребителей: система совместного управления ЦП между производителями и розничными сетями. Основные компоненты: 1) EDI — интегрированный электронный обмен данными (информационная основа), 2) Система категорийного менеджмента — единообразие в данных о спросе и запасах, 3) Система непрерывного пополнения запасов — мониторинг и автоматическое пополнение на принципах тянущей логистики, 4) Автоматическое формирование заказов, 5) Кросс-докинг в РЦ — избежание промежуточных запасов.' },
+  { topic:'t3', question:'Объясните пять уровней конвергенции в SCM-системах. Чем уровень 5 принципиально отличается от уровня 1?', answer:'Уровень 1 (аналитика): компоненты процессно не связаны, есть только централизованная бизнес-аналитика. Уровень 2 (транзакции): данные передаются между системами односторонне, синхронизации нет. Уровень 3 (синхронизация): событийное взаимодействие в реальном времени, процессы синхронизированы по времени и данным. Уровень 4 (оптимизация): планирование одной области с учётом другой (доставка с учётом склада). Уровень 5 (распределение): решения принимаются в рамках нескольких организаций ЦП. Принципиальное отличие: на уровне 1 каждый сам по себе, на уровне 5 — межорганизационная оптимизация.' },
+
+  // Тема 4
+  { topic:'t4', question:'Опишите матрицу Кралича. Как используется каждый из четырёх квадрантов для выбора стратегии закупок?', answer:'Матрица Кралича: два критерия — объём стоимости закупок (Y) и сложность рынка поставок (X). 4 квадранта: Стратегические (высокий объём + сложный рынок): долгосрочные партнёрства, совместное развитие, min. поставщиков. Возможности (высокий объём + простой рынок): тендеры, оптовые скидки, несколько поставщиков. Узкие места (низкий объём + сложный рынок): поиск альтернатив, страховые запасы, развитие поставщика. Некритические (низкий объём + простой рынок): стандартизация, автозаказы, минимум внимания менеджмента.' },
+  { topic:'t4', question:'Объясните ABC и XYZ анализ. Как комбинировать их результаты для управления запасами?', answer:'ABC: по доле в выручке/продажах. A — 20% позиций, 80% выручки (макс. внимание). B — 30%/15% (средний контроль). C — 50%/5% (минимальный контроль). XYZ: по стабильности спроса (коэффициент вариации). X (<10%): стабильный. Y (10-25%): умеренный. Z (>25%): непредсказуемый. Комбинация: AX — максимальный приоритет, частые поставки, точные прогнозы. AZ — высокая выручка, но нестабильный спрос: крупные страховые запасы или работа под заказ. CX — стабильный, но низкодоходный: автозаказы с долгим интервалом. CZ — кандидаты на вывод из ассортимента.' },
+  { topic:'t4', question:'Сравните толкающую (PUSH) и тянущую (PULL) стратегии снабжения. Когда применять каждую?', answer:'PUSH: закупки крупными партиями, нерегулярно. + независимость от конкретного поставщика, возможность найти выгодную цену, гибкость. − высокий средний уровень запасов. Применяется: нестабильные поставщики, волатильные цены, сезонные товары. PULL: регулярные поставки небольшими партиями. + минимальные складские мощности и запасы. − высокие риски при сбоях в поставках, нужна тесная координация с поставщиком. Применяется: надёжные поставщики, стабильный спрос, JIT-производство. На практике компании часто применяют смешанный подход для разных категорий.' },
+  { topic:'t4', question:'Что такое VMI? Какие выгоды получают клиент и поставщик от этой технологии?', answer:'VMI (Vendor Managed Inventory) — поставщик берёт на себя управление запасами клиента: мониторит уровень запасов, сам принимает решения о пополнении, определяет параметры заказа. Выгоды клиента: снижение административной нагрузки, меньше дефицита, оптимальные запасы. Выгоды поставщика: лучшее планирование производства (видит реальный спрос), снижение bullwhip-эффекта, укрепление отношений с клиентом. Условие: высокий уровень доверия и прозрачность данных о запасах и продажах.' },
+
+  // Тема 6
+  { topic:'t6', question:'Сравните многоканальный (multichannel) и омниканальный (omnichannel) сбыт. В чём принципиальное различие?', answer:'Multichannel: несколько независимых каналов (магазин, онлайн, маркетплейс). Каналы не связаны: разные запасы, разные цены, разные данные о клиентах. Товароориентированный подход — создать максимум каналов. Omnichannel: все каналы интегрированы. Единые запасы, единая информация о клиенте независимо от канала. Клиентоориентированный подход — бесшовный опыт. Пример: в омниканале можно купить онлайн и вернуть в магазин, видеть актуальные остатки любого магазина в приложении.' },
+  { topic:'t6', question:'Опишите три типа систем распределения: собственная, независимая и связанная. Плюсы и минусы каждой.', answer:'Собственная: участники — подразделения или дочерние компании. + полный контроль каналов, снижение транзакционных издержек, прямой выход на клиентов. − инвестиции в создание сети, ограниченность размером сети. Независимая: внешние посредники, работают с несколькими поставщиками. + свобода выбора каналов, нет инвестиций. − отсутствие контроля над потоками, риск репутационных потерь. Связанная: посредники юридически самостоятельны, но связаны договором. + сочетает преимущества обеих. Примеры связанной: франчайзинг, дистрибьюторские сети.' },
+  { topic:'t6', question:'Какие задачи решает логистика на разных этапах жизненного цикла товара?', answer:'Внедрение: нет статистики, высокие удельные логистические издержки. Задачи: планирование каналов, создание запасов, формирование системы доставки, организация сервиса. Рост: баланс между сервисом и издержками. Задачи: оптимизация процессов, открытие новых РЦ, поддержание уровня запасов. Зрелость: усложнение системы сбыта, рост удельных издержек. Задачи: поддержание сервиса, оценка каналов, снижение затрат. Упадок: главное — не допустить полного отказа. Задачи: управление остатками, переориентация на новые рынки.' },
+  { topic:'t6', question:'Что такое кросс-докинг? Каковы условия его эффективного применения?', answer:'Кросс-докинг — переформирование товарных потоков без промежуточного хранения. Товары поступают от нескольких поставщиков, сортируются и немедленно отгружаются по точкам продаж. Преимущества: нет хранения, снижение запасов, меньше площадей, ускорение, снижение риска просрочки. Условия эффективного применения: широкий ассортимент, много поставщиков, средние партии, отлаженные бизнес-процессы, высокий уровень информационной интеграции (EDI), рациональная организация пункта кросс-докинга.' },
+
+  // Тема 7
+  { topic:'t7', question:'Объясните формулу EOQ (Economic Order Quantity). Что она оптимизирует и каковы её ограничения?', answer:'EOQ = √(2DS/H), где D — годовое потребление, S — затраты на размещение и выполнение одного заказа, H — затраты на хранение единицы товара в год. Оптимизирует: находит размер заказа, при котором суммарные затраты на закупку (S) и хранение (H) минимальны. При малом EOQ — частые заказы, низкие запасы, но высокие затраты на размещение. При большом EOQ — редкие заказы, но высокие складские затраты. Ограничения: постоянный спрос, постоянная цена, мгновенное пополнение — в реальности эти условия часто не выполняются.' },
+  { topic:'t7', question:'Опишите три исторических подхода к управлению запасами: максимизация, оптимизация, минимизация. Когда каждый актуален сегодня?', answer:'Максимизация (до XX века): большие запасы — признак процветания. Актуально сегодня: дефицит товаров, нестабильные поставки, высокая волатильность цен. Оптимизация (XX век): принцип общих затрат, расчёт оптимального уровня по EOQ и другим моделям. Актуально: всегда при стабильном спросе и надёжных поставках. Минимизация (JIT): запасы — источник проблем, нужно к нулю. Актуально: надёжные поставщики, стабильный спрос, Toyota-подобное производство. На практике: все три подхода применяются для разных категорий товаров.' },
+  { topic:'t7', question:'Объясните эффект хлыста. Какие меры помогают его устранить?', answer:'Эффект хлыста: небольшие колебания спроса у конечного потребителя усиливаются на каждом уровне ЦП. Причины: ошибки прогнозирования, «оптовые» заказы, задержки информации, нестабильность цен. Меры борьбы: 1) Информационная интеграция — EDI, RFID, совместные прогнозы (CPFR), 2) Сокращение времени выполнения заказа, 3) Сглаживание ценовой политики, 4) VMI — поставщик видит реальный спрос, 5) Стабилизация размеров партий, 6) Повышение доверия и прозрачности между партнёрами.' },
+  { topic:'t7', question:'Сравните модель с фиксированным объёмом заказа (FRQ) и модель с фиксированной периодичностью (FRI). Для каких категорий товаров применять каждую?', answer:'FRQ (фикс. объём): постоянный размер заказа, момент — при достижении точки заказа. Требует непрерывного мониторинга. + низкий риск дефицита, меньше складских площадей. − нерегулярные заказы (неудобно поставщику). Применяется: группа A — ценные товары, где дефицит дорого стоит. FRI (фикс. периодичность): заказ по расписанию, объём варьируется. + ритмичность поставок. − выше риск дефицита, большие складские площади. Применяется: группа C — недорогие товары, когда удобство важнее оптимизации. Группа B — средний контроль, можно применять оба варианта.' },
+
+  // Тема 8
+  { topic:'t8', question:'Опишите три уровня решений относительно складов. Какие вопросы решаются на каждом уровне?', answer:'Уровень 1 — Формирование складской сети: где расположить склады, какого типа, сколько. Это часть задачи формирования логистической сети. Уровень 2 — Проектирование системы складского хозяйства: проект помещения, зонирование, система управления, комплекс погрузки-разгрузки, оборудование хранения, внутренний транспорт. Уровень 3 — Разработка логистических процессов: поступление товаров, разгрузка, приёмка, хранение, комплектация, отгрузка, возвраты, инвентаризация.' },
+  { topic:'t8', question:'Объясните ABCD-классификацию складских помещений. Что является главным критерием класса A?', answer:'Главный критерий класса A — новизна постройки здания. Класс A: современное каркасное одноэтажное здание, высота потолков >12 м, регулируемый температурный режим, нагрузка на пол >6 т/кв.м, плотность застройки <55%, спринклерная система, пожарная сигнализация, асфальтированная территория, доки с уравнительными платформами и герметизаторами, >1 дока на 1000 кв.м. Класс B: доперестроечный период. Класс C: бывшие производственные помещения. Класс D: гаражи, подвалы — нецелесообразна модернизация.' },
+  { topic:'t8', question:'Опишите основные зоны склада и их функции. Как взаимное расположение зон влияет на эффективность?', answer:'Зона разгрузки: выгрузка из ТС, проверка целостности. Зона приёмки (приёмочной экспедиции): проверка количества и качества, документация; если склад не работает круглосуточно — временное хранение. Зона хранения: размещение на стеллажи, может делиться по видам товаров или скорости оборота. Зона комплектации (отправочной экспедиции): консолидация грузов, формирование отгрузочных пакетов. Зона погрузки: сверка с документами, загрузка в ТС. Зона кросс-докинга: переформирование без хранения. Эффективность: оптимальные потоки (нет пересечений) минимизируют пробег внутреннего транспорта.' },
+  { topic:'t8', question:'Что такое WMS? Когда она нужна и какие функции выполняет?', answer:'WMS (Warehouse Management System) — информационная система для управления работой склада. Нужна при: номенклатуре >1000 артикулов или площади >1000 кв.м, когда задачи маршрутизации, контроля сроков годности, динамического хранения требуют автоматизации. Функции: динамическое хранение (товар на любое свободное место, WMS знает адрес каждой позиции), маршрутизация отборщиков, управление инвентаризацией, контроль сроков годности, интеграция с ERP и TMS, аналитика. WCS (Warehouse Control System) управляет автоматизированным оборудованием в реальном времени — посредник между WMS и роботами/конвейерами.' },
+
+  // Тема 9
+  { topic:'t9', question:'Объясните разницу между 1PL, 2PL, 3PL и 4PL провайдерами. Что принципиально даёт 3PL?', answer:'1PL: компания выполняет всю логистику своими силами. 2PL: транспортировка и складирование отдаются одному провайдеру (перевозчик + арендованный склад). 3PL: комплексный аутсорсинг. Провайдер управляет логистикой клиента: владеет активами (терминалы-хабы), интегрирует потоки нескольких клиентов (эффект масштаба), предоставляет профессиональные знания. 4PL (LLP): управляет всей ЦП клиента, координирует нескольких 3PL-операторов. Часто без собственных активов. Принципиально 3PL даёт: профессиональные знания в управлении, системные решения, интеграцию потоков разных клиентов, терминальные ресурсы.' },
+  { topic:'t9', question:'Что такое «черный лебедь» по Талебу? Как это понятие применимо к современным цепям поставок?', answer:'«Чёрный лебедь» (Талеб) — непредвиденное событие с огромными последствиями, которое ретроспективно кажется объяснимым. Три признака: 1) непредсказуемость, 2) огромный масштаб последствий, 3) ретроспективная объяснимость. Применительно к ЦП: сочетание трёх кризисных факторов (мировой финансово-экономический кризис + пандемия COVID-19 + экономические санкции) имеет все признаки «чёрного лебедя». Цепи поставок стали не только жертвами, но и каналами распространения «токсичных» явлений. Вывод: нужно строить устойчивые, а не только эффективные ЦП.' },
+  { topic:'t9', question:'Объясните концепцию реконфигурации ЦП. Какие три стратегии реализуются в кризисных условиях?', answer:'Реконфигурация ЦП — комплекс действий по обеспечению стабильности в условиях внешней неопределённости и изменчивости. Три стратегии: 1) Сохранение существующих поставщиков: удержание прежних партнёров, корректировка условий контрактов. 2) Поиск новых поставщиков в дружественных странах (nearshoring/China+): диверсификация, снижение зависимости от одного источника. 3) Локализация поставок: перевод закупок на отечественных поставщиков. Дополнительно: меры по стабилизации — создание антикризисных структур, увеличение уровней запасов, «заморозка» инвестиций, ускорение принятия решений.' },
+  { topic:'t9', question:'Опишите три варианта «Треугольника стабильности» по Barroso. Что означает антихрупкость применительно к ЦП?', answer:'Треугольник стабильности (Barroso): три варианта восстановления ЦП после внешнего воздействия. Вариант 1: параметр ЦП ухудшается, затем возвращается к прежнему значению (полное восстановление). Вариант 2: параметр ухудшается и полностью не восстанавливается (частичное восстановление). Вариант 3 (наилучший): параметр ухудшается, но затем превышает прежнее значение — антихрупкость. Антихрупкость по Талебу: система не просто восстанавливается после стресса, но становится сильнее. Для ЦП: кризис использован как возможность переосмыслить процессы, внедрить автоматизацию, диверсифицировать поставщиков — стать устойчивее.' },
+  { topic:'t9', question:'Что такое nearshoring? Почему эта стратегия стала популярна, и какие проблемы возникают при её реализации для российских компаний?', answer:'Nearshoring (China+) — поиск поставщиков в географически близких или «дружественных» странах. В мировой практике: «ближе и дешевле» (диверсификация от Китая). Для России: часто единственная реальная альтернатива, лидер — Китай (103 ответа в опросе ВШБ), далее Турция, Индия, Казахстан. Популярность: после кризисов выяснилось, что концентрация поставок в одной стране создаёт огромные риски. Проблемы для российских компаний: незнакомая социально-культурная среда, языковой барьер, различия в регулировании, риски вторичных санкций, проблемы взаиморасчётов, логистические сложности.' },
+];
+
+
+// ==================== LECTURES DATA ====================
+const LECTURES = [
+  {
+    id: 't1',
+    name: 'Тема 1: Введение в логистику и УЦП',
+    icon: '📚',
+    sub: '94 слайда',
+    file: 'ТЕМА_1_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_.pdf'
+  },
+  {
+    id: 't2',
+    name: 'Тема 2: Цепи поставок и SCOR-модель',
+    icon: '🔗',
+    sub: '58 слайдов',
+    file: 'ТЕМА_2_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_v2.pdf'
+  },
+  {
+    id: 't3',
+    name: 'Тема 3: Прогнозирование и планирование',
+    icon: '📊',
+    sub: '63 слайда',
+    file: 'ТЕМА_3_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_v2.pdf'
+  },
+  {
+    id: 't4',
+    name: 'Тема 4: Снабжение и закупки',
+    icon: '🛒',
+    sub: '36 слайдов',
+    file: 'ТЕМА_4_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_v2.pdf'
+  },
+  {
+    id: 't5',
+    name: 'Тема 5: Производственная логистика',
+    icon: '⚙️',
+    sub: 'Слайды',
+    file: 'ТЕМА_5_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_v2.pdf'
+  },
+  {
+    id: 't6',
+    name: 'Тема 6: Распределение',
+    icon: '🚚',
+    sub: '53 слайда',
+    file: 'ТЕМА_6_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_v2.pdf'
+  },
+  {
+    id: 't7',
+    name: 'Тема 7: Управление запасами',
+    icon: '📦',
+    sub: '30 слайдов',
+    file: 'ТЕМА_7_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_v2.pdf'
+  },
+  {
+    id: 't8',
+    name: 'Тема 8: Логистическая инфраструктура',
+    icon: '🏭',
+    sub: '44 слайда',
+    file: 'ТЕМА_8_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_v2.pdf'
+  },
+  {
+    id: 't91',
+    name: 'Тема 9.1: Рынок логистических услуг',
+    icon: '🛡️',
+    sub: '28 слайдов',
+    file: 'ТЕМА_9_1_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_v2.pdf'
+  },
+  {
+    id: 't92',
+    name: 'Тема 9.2: Устойчивость цепей поставок',
+    icon: '🌐',
+    sub: '17 слайдов',
+    file: 'ТЕМА_9_2_ЛОГИСТИКА_И_УПРАВЛЕНИЕ_ЦЕПЯМИ_ПОСТАВОК_2026_v2.pdf'
+  },
+];
+
+// ==================== STATE ====================
+let selectedMode = 'quiz';
+let sessionQuestions = [];
+let currentQ = 0;
+let correct = 0;
+let wrong = 0;
+let answered = false;
+let progress = {};
+let fcCards = [];
+let fcIndex = 0;
+let fcFlipped = false;
+
+// ==================== INIT ====================
+function init() {
+  try { progress = JSON.parse(localStorage.getItem('lq_progress') || '{}'); } catch(e) { progress = {}; }
+  renderTopics();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getCount(topicId, arr) {
+  if (topicId === 'all') return arr.length;
+  return arr.filter(x => x.topic === topicId).length;
+}
+
+function renderTopics() {
+  const grid = document.getElementById('topicGrid');
+  grid.innerHTML = TOPICS.map(t => {
+    const count = selectedMode === 'quiz' ? getCount(t.id, QUESTIONS) :
+                  selectedMode === 'flashcards' ? getCount(t.id, FLASHCARDS) :
+                  selectedMode === 'openq' ? getCount(t.id, OPEN_QUESTIONS) :
+                  getCount(t.id, FLASHCARDS);
+    const pct = progress[t.id] || 0;
+    const circ = 2 * Math.PI * 14;
+    const offset = circ - (pct / 100) * circ;
+    return `<div class="topic-card" onclick="startFromTopic('${t.id}')">
+      <div class="topic-icon">${t.icon}</div>
+      <div class="topic-info">
+        <div class="topic-name">${t.name}</div>
+        <div class="topic-meta">${count} ${selectedMode === 'quiz' ? 'вопросов' : selectedMode === 'openq' ? 'открытых вопросов' : 'флэшкарт'}</div>
+      </div>
+      <div class="topic-progress">
+        <div class="prog-ring">
+          <svg width="36" height="36" viewBox="0 0 36 36">
+            <circle class="bg" cx="18" cy="18" r="14"/>
+            <circle class="fill" cx="18" cy="18" r="14" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"/>
+          </svg>
+          <div class="prog-pct">${pct ? pct+'%' : ''}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectMode(mode, el) {
+  selectedMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (mode === 'lectures') {
+    renderLectures();
+    showScreen('lectures');
+  } else {
+    renderTopics();
+    showScreen('home');
+  }
+}
+
+// ==================== LECTURES ====================
+function renderLectures() {
+  // Figure out the GitHub Pages base URL automatically
+  const base = window.location.href.replace(/\/[^/]*$/, '/');
+  const list = document.getElementById('lectureList');
+  list.innerHTML = `
+    <div class="lecture-note">
+      📱 PDF открывается во встроенном просмотрщике. Если не загружается — нажмите «Скачать» для открытия в браузере.
+    </div>` +
+    LECTURES.map(l => `
+      <div class="lecture-card" onclick="openPdf('${encodeURIComponent(l.file)}', '${l.name}')">
+        <div class="lecture-icon">${l.icon}</div>
+        <div class="lecture-info">
+          <div class="lecture-name">${l.name}</div>
+          <div class="lecture-sub">${l.sub}</div>
+        </div>
+        <div class="lecture-arrow">›</div>
+      </div>`
+    ).join('');
+}
+
+function openPdf(encodedFile, title) {
+  const base = window.location.href.replace(/\/[^/]*$/, '/');
+  const file = decodeURIComponent(encodedFile);
+  const directUrl = base + file;
+
+  document.getElementById('pdfTitle').textContent = title;
+  document.getElementById('pdfDownload').href = directUrl;
+
+  const frame = document.getElementById('pdfFrame');
+
+  // On mobile, iframe PDF doesn't scroll — use Google Docs Viewer instead
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    frame.src = 'https://docs.google.com/viewer?url=' + encodeURIComponent(directUrl) + '&embedded=true';
+  } else {
+    frame.src = directUrl;
+  }
+
+  showScreen('pdfViewer');
+}
+
+function closePdf() {
+  // Clear iframe to stop loading
+  document.getElementById('pdfFrame').src = '';
+  showScreen('lectures');
+}
+
+// ==================== START (tap topic = go directly) ====================
+function startFromTopic(topicId) {
+  if (selectedMode === 'flashcards') {
+    startFlashcards(topicId);
+  } else if (selectedMode === 'openq') {
+    startOpenQ(topicId);
+  } else {
+    startQuiz(topicId);
+  }
+}
+
+function startQuiz(topicId) {
+  let pool = topicId === 'all' ? QUESTIONS : QUESTIONS.filter(q => q.topic === topicId);
+  sessionQuestions = shuffle(pool).slice(0, Math.min(pool.length, 20));
+  currentQ = 0; correct = 0; wrong = 0;
+  const t = TOPICS.find(t => t.id === topicId);
+  document.getElementById('quizTopicLabel').textContent = t ? t.name : 'Все темы';
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function startFlashcards(topicId) {
+  let pool = topicId === 'all' ? FLASHCARDS : FLASHCARDS.filter(f => f.topic === topicId);
+  fcCards = shuffle(pool);
+  fcIndex = 0; fcFlipped = false;
+  const t = TOPICS.find(t => t.id === topicId);
+  document.getElementById('fcTopicName').textContent = t ? t.name : 'Все темы';
+  showScreen('flashcards');
+  renderCard();
+}
+
+// ==================== QUIZ RENDER ====================
+const TYPE_INFO = {
+  mcq:   { icon:'🔘', label:'Один правильный ответ', cls:'', hint:'Выберите один вариант' },
+  multi: { icon:'☑️',  label:'Несколько правильных ответов', cls:'multi', hint:'Отметьте все верные, затем «Проверить»' },
+  input: { icon:'⌨️', label:'Введите ответ', cls:'input-type', hint:'Напечатайте ответ и нажмите «Проверить»' },
+  match: { icon:'🔀', label:'Сопоставление', cls:'match', hint:'Выберите пару для каждого термина' },
+};
+
+function renderQuestion() {
+  answered = false;
+  const q = sessionQuestions[currentQ];
+  const total = sessionQuestions.length;
+  const ti = TYPE_INFO[q.type];
+
+  document.getElementById('quizCounter').textContent = `${currentQ + 1}/${total}`;
+  document.getElementById('progressBar').style.width = ((currentQ + 1) / total * 100) + '%';
+  document.getElementById('nextBtn').classList.remove('show');
+
+  let html = `
+    <div class="q-type-banner ${ti.cls}">
+      <span class="q-type-icon">${ti.icon}</span>
+      <span class="q-type-text">${ti.label}</span>
+      <span class="q-type-hint">${ti.hint}</span>
+    </div>
+    <div class="q-text">${q.text}</div>`;
+
+  if (q.type === 'mcq') {
+    // Shuffle options to fix "correct always second" bug
+    const letters = 'АБВГ';
+    const indices = [0,1,2,3].slice(0, q.opts.length);
+    const shuffledIdx = shuffle(indices);
+    q._shuffledCorrect = shuffledIdx.indexOf(q.correct);
+    const shuffledOpts = shuffledIdx.map(i => q.opts[i]);
+    html += `<div class="options">` + shuffledOpts.map((opt, i) =>
+      `<div class="option" id="opt${i}" onclick="answerMCQ(${i})">
+        <div class="opt-letter">${letters[i]}</div>
+        <div>${opt}</div>
+      </div>`
+    ).join('') + `</div>`;
+
+  } else if (q.type === 'multi') {
+    const letters = 'АБВГД';
+    html += `<div class="options" id="multiOpts">` + q.opts.map((opt, i) =>
+      `<div class="option" id="mopt${i}" onclick="toggleMulti(${i})">
+        <div class="opt-letter" id="ml${i}">${letters[i]}</div>
+        <div>${opt}</div>
+      </div>`
+    ).join('') + `</div>
+    <button class="multi-submit" id="multiSubmit" onclick="submitMulti()" disabled>
+      ✓ Проверить выбранные
+    </button>`;
+
+  } else if (q.type === 'input') {
+    html += `<div class="text-input-wrap">
+      <div class="input-hint-box">💡 <span>${q.hint}</span></div>
+      <input class="text-input" id="textInput" type="text"
+        placeholder="Введите ответ..."
+        autocomplete="off" autocorrect="off" spellcheck="false"
+        oninput="updateTextSubmit()"
+        onkeydown="if(event.key==='Enter' && !document.getElementById('textSubmit').disabled) submitInput()">
+      <button class="text-submit" id="textSubmit" onclick="submitInput()" disabled>
+        ✓ Проверить
+      </button>
+    </div>`;
+
+  } else if (q.type === 'match') {
+    const shuffledDefs = shuffle(q.pairs.map(p => p.def));
+    html += `<div class="match-wrap">` + q.pairs.map((pair, i) => {
+      const opts = shuffledDefs.map(d => `<option value="${d}">${d}</option>`).join('');
+      return `<div class="match-row">
+        <div class="match-term">${pair.term}</div>
+        <select class="match-select" id="match${i}">
+          <option value="">— выберите —</option>
+          ${opts}
+        </select>
+      </div>`;
+    }).join('') + `</div>
+    <button class="match-submit" onclick="submitMatch()">✓ Проверить</button>`;
+  }
+
+  document.getElementById('quizBody').innerHTML = html;
+
+  if (q.type === 'input') {
+    setTimeout(() => document.getElementById('textInput')?.focus(), 100);
+  }
+}
+
+function showFeedback(isCorrect, explanation) {
+  const body = document.getElementById('quizBody');
+  const fb = document.createElement('div');
+  fb.className = `feedback ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  fb.innerHTML = `<span class="feedback-icon">${isCorrect ? '✅' : '❌'}</span>
+    <div class="feedback-title">${isCorrect ? 'Верно!' : 'Не совсем.'}</div>
+    <div class="feedback-text">${explanation}</div>`;
+  body.appendChild(fb);
+  document.getElementById('nextBtn').classList.add('show');
+  answered = true;
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// MCQ
+function answerMCQ(i) {
+  if (answered) return;
+  const q = sessionQuestions[currentQ];
+  document.querySelectorAll('.option').forEach(o => o.classList.add('locked'));
+  // q._correct is the shuffled correct index stored at render time
+  const correctIdx = q._shuffledCorrect !== undefined ? q._shuffledCorrect : q.correct;
+  const isCorrect = i === correctIdx;
+  document.getElementById(`opt${i}`).classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) document.getElementById(`opt${correctIdx}`).classList.add('correct');
+  isCorrect ? correct++ : wrong++;
+  showFeedback(isCorrect, q.explanation);
+}
+
+// Multi
+let multiSelected = new Set();
+function toggleMulti(i) {
+  if (answered) return;
+  const el = document.getElementById(`mopt${i}`);
+  if (multiSelected.has(i)) {
+    multiSelected.delete(i);
+    el.classList.remove('multi-sel');
+  } else {
+    multiSelected.add(i);
+    el.classList.add('multi-sel');
+  }
+  // Need at least 2 selected to submit (enforce multiple choice)
+  document.getElementById('multiSubmit').disabled = multiSelected.size < 1;
+}
+
+function submitMulti() {
+  if (answered) return;
+  const q = sessionQuestions[currentQ];
+  document.querySelectorAll('.option').forEach(o => {
+    o.classList.add('locked');
+    o.classList.remove('multi-sel'); // remove blue selection highlight so correct/wrong show through
+  });
+  document.getElementById('multiSubmit').disabled = true;
+  const selected = [...multiSelected].sort().join(',');
+  const expected = [...q.correct].sort().join(',');
+  const isCorrect = selected === expected;
+  q.opts.forEach((_, i) => {
+    const el = document.getElementById(`mopt${i}`);
+    const letter = document.getElementById(`ml${i}`);
+    if (!el) return;
+    const isCorrect = q.correct.includes(i);
+    const wasSelected = multiSelected.has(i);
+    if (isCorrect && wasSelected) {
+      el.classList.add('correct');
+      if (letter) letter.textContent = '✓';
+    } else if (isCorrect && !wasSelected) {
+      el.classList.add('correct-missed');
+      if (letter) letter.textContent = '✓';
+    } else if (!isCorrect && wasSelected) {
+      el.classList.add('wrong');
+      if (letter) letter.textContent = '✗';
+    }
+  });
+  multiSelected = new Set();
+  isCorrect ? correct++ : wrong++;
+  showFeedback(isCorrect, q.explanation);
+}
+
+// Input — enable button only when non-empty
+function updateTextSubmit() {
+  const val = document.getElementById('textInput')?.value.trim();
+  const btn = document.getElementById('textSubmit');
+  if (btn) btn.disabled = !val;
+}
+
+function submitInput() {
+  if (answered) return;
+  const val = document.getElementById('textInput').value.trim();
+  if (!val) return; // guard: don't submit empty
+  const q = sessionQuestions[currentQ];
+  const normalized = val.toLowerCase();
+  const isCorrect = q.answer.some(a =>
+    normalized === a.toLowerCase() ||
+    normalized.includes(a.toLowerCase()) ||
+    a.toLowerCase().includes(normalized)
+  );
+  const inp = document.getElementById('textInput');
+  inp.classList.add(isCorrect ? 'correct' : 'wrong');
+  inp.disabled = true;
+  document.getElementById('textSubmit').disabled = true;
+  isCorrect ? correct++ : wrong++;
+  showFeedback(isCorrect, `Правильный ответ: «${q.answer[0]}». ${q.explanation}`);
+}
+
+// Match
+function submitMatch() {
+  if (answered) return;
+  const q = sessionQuestions[currentQ];
+  let allCorrect = true;
+  q.pairs.forEach((pair, i) => {
+    const sel = document.getElementById(`match${i}`);
+    const isCorrect = sel.value === pair.def;
+    sel.classList.add(isCorrect ? 'correct' : 'wrong');
+    sel.disabled = true;
+    if (!isCorrect) allCorrect = false;
+  });
+  document.querySelector('.match-submit').disabled = true;
+  allCorrect ? correct++ : wrong++;
+  showFeedback(allCorrect, q.explanation);
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= sessionQuestions.length) {
+    showResults();
+  } else {
+    document.getElementById('quizBody').scrollTop = 0;
+    window.scrollTo(0, 0);
+    renderQuestion();
+  }
+}
+
+// ==================== RESULTS ====================
+function showResults() {
+  const total = sessionQuestions.length;
+  const pct = Math.round(correct / total * 100);
+  const trophy = pct >= 90 ? '🏆' : pct >= 70 ? '🥈' : pct >= 50 ? '🥉' : '📚';
+  const label = pct >= 90 ? 'Отлично! Вы знаете материал на высоком уровне.' :
+                pct >= 70 ? 'Хорошо! Есть небольшие пробелы.' :
+                pct >= 50 ? 'Неплохо, но стоит повторить материал.' :
+                            'Рекомендуем ещё раз изучить тему.';
+
+  // Save best progress
+  const topicKey = document.getElementById('quizTopicLabel').textContent === 'Все темы' ? 'all' : 
+    TOPICS.find(t => t.name === document.getElementById('quizTopicLabel').textContent)?.id || 'all';
+  if (!progress[topicKey] || pct > progress[topicKey]) {
+    progress[topicKey] = pct;
+    try { localStorage.setItem('lq_progress', JSON.stringify(progress)); } catch(e) {}
+  }
+
+  document.getElementById('resultTrophy').textContent = trophy;
+  document.getElementById('resultScore').textContent = pct + '%';
+  document.getElementById('resultLabel').textContent = label;
+  document.getElementById('resultStats').innerHTML = `
+    <div class="stat-row"><span>Вопросов всего</span><span class="stat-val">${total}</span></div>
+    <div class="stat-row"><span>Правильно</span><span class="stat-val good">${correct}</span></div>
+    <div class="stat-row"><span>Неправильно</span><span class="stat-val bad">${wrong}</span></div>
+    <div class="stat-row"><span>Результат</span><span class="stat-val">${pct}%</span></div>`;
+  showScreen('results');
+}
+
+function retryQuiz() {
+  if (selectedMode === 'openq') {
+    oqIndex = 0;
+    oqResults = {knew:0, partly:0, didnt:0};
+    oqSession = shuffle(oqSession);
+    showScreen('openQuestions');
+    renderOQ();
+  } else {
+    showScreen('quiz');
+    currentQ = 0; correct = 0; wrong = 0;
+    sessionQuestions = shuffle(sessionQuestions);
+    renderQuestion();
+  }
+}
+
+// ==================== FLASHCARDS ====================
+function renderCard() {
+  const card = fcCards[fcIndex];
+  fcFlipped = false;
+  document.getElementById('fcCounter').textContent = `${fcIndex + 1} / ${fcCards.length}`;
+  document.getElementById('fcSideLabel').textContent = 'ТЕРМИН';
+  document.getElementById('fcFront').textContent = card.term;
+  document.getElementById('fcFront').style.display = '';
+  document.getElementById('fcBack').textContent = card.def;
+  document.getElementById('fcBack').style.display = 'none';
+  document.querySelector('.fc-flip-hint').style.display = '';
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('fcSideLabel').textContent = fcFlipped ? 'ОПРЕДЕЛЕНИЕ' : 'ТЕРМИН';
+  document.getElementById('fcFront').style.display = fcFlipped ? 'none' : '';
+  document.getElementById('fcBack').style.display = fcFlipped ? '' : 'none';
+  document.querySelector('.fc-flip-hint').style.display = fcFlipped ? 'none' : '';
+}
+
+function fcPrev() { if (fcIndex > 0) { fcIndex--; renderCard(); } }
+function fcNext() { if (fcIndex < fcCards.length - 1) { fcIndex++; renderCard(); } }
+function fcShuffle() { fcCards = shuffle(fcCards); fcIndex = 0; renderCard(); }
+
+
+// ==================== OPEN QUESTIONS ====================
+let oqSession = [];
+let oqIndex = 0;
+let oqResults = {knew:0, partly:0, didnt:0};
+
+function startOpenQ(topicId) {
+  let pool = topicId === 'all' ? OPEN_QUESTIONS : OPEN_QUESTIONS.filter(q => q.topic === topicId);
+  if (!pool.length) { alert('Нет открытых вопросов по этой теме.'); return; }
+  oqSession = shuffle(pool);
+  oqIndex = 0;
+  oqResults = {knew:0, partly:0, didnt:0};
+  const t = TOPICS.find(t => t.id === topicId);
+  document.getElementById('oqTopicLabel').textContent = t ? t.name : 'Все темы';
+  showScreen('openQuestions');
+  renderOQ();
+}
+
+function renderOQ() {
+  const q = oqSession[oqIndex];
+  const total = oqSession.length;
+  document.getElementById('oqCounter').textContent = `${oqIndex+1}/${total}`;
+  document.getElementById('oqProgressBar').style.width = ((oqIndex+1)/total*100)+'%';
+  document.getElementById('oqNextBtn').classList.remove('show');
+
+  document.getElementById('oqBody').innerHTML = `
+    <div class="oq-card">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">📝 ОТКРЫТЫЙ ВОПРОС</div>
+      <div class="oq-question">${q.question}</div>
+      <button class="oq-show-btn" id="oqShowBtn" onclick="showOQAnswer()">👁 Показать ответ</button>
+      <div class="oq-answer-wrap" id="oqAnswerWrap">
+        <div class="oq-answer-label">Эталонный ответ:</div>
+        <div class="oq-answer-text">${q.answer}</div>
+      </div>
+      <div class="oq-self-eval" id="oqSelfEval">
+        <div class="oq-eval-label">Как ты оцениваешь свой ответ?</div>
+        <div class="oq-eval-btns">
+          <button class="oq-eval-btn knew" onclick="evalOQ('knew',this)">✅ Знал</button>
+          <button class="oq-eval-btn partly" onclick="evalOQ('partly',this)">🟡 Частично</button>
+          <button class="oq-eval-btn didnt" onclick="evalOQ('didnt',this)">❌ Не знал</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function showOQAnswer() {
+  document.getElementById('oqShowBtn').style.display = 'none';
+  document.getElementById('oqAnswerWrap').classList.add('show');
+  document.getElementById('oqSelfEval').classList.add('show');
+}
+
+function evalOQ(result, btn) {
+  oqResults[result]++;
+  document.querySelectorAll('.oq-eval-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.querySelectorAll('.oq-eval-btn').forEach(b => b.disabled = true);
+  document.getElementById('oqNextBtn').classList.add('show');
+}
+
+function oqNext() {
+  oqIndex++;
+  if (oqIndex >= oqSession.length) {
+    showOQResults();
+  } else {
+    window.scrollTo(0,0);
+    renderOQ();
+  }
+}
+
+function showOQResults() {
+  const total = oqSession.length;
+  const pct = Math.round((oqResults.knew + oqResults.partly * 0.5) / total * 100);
+  document.getElementById('resultTrophy').textContent = pct >= 80 ? '🏆' : pct >= 60 ? '🥈' : '📚';
+  document.getElementById('resultScore').textContent = pct + '%';
+  document.getElementById('resultLabel').textContent = 'Оценка открытых вопросов';
+  document.getElementById('resultStats').innerHTML = `
+    <div class="stat-row"><span>Вопросов всего</span><span class="stat-val">${total}</span></div>
+    <div class="stat-row"><span>✅ Знал</span><span class="stat-val good">${oqResults.knew}</span></div>
+    <div class="stat-row"><span>🟡 Частично</span><span class="stat-val" style="color:var(--gold)">${oqResults.partly}</span></div>
+    <div class="stat-row"><span>❌ Не знал</span><span class="stat-val bad">${oqResults.didnt}</span></div>`;
+  showScreen('results');
+}
+
+// ==================== NAVIGATION ====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  if (selectedMode === 'lectures') {
+    selectedMode = 'quiz';
+    document.querySelectorAll('.mode-btn').forEach((b, i) => {
+      b.classList.toggle('active', i === 0);
+    });
+  }
+  showScreen('home');
+  renderTopics();
+}
+
+// ==================== BOOT ====================
+init();
+</script>
+</body>
+</html>
